@@ -17,5 +17,11 @@ namespace MobileBgWatch.Services
             var user = await this._userManager.FindByIdAsync(userId);
             return user.SearchUrls.Count <= 5;
         }
+
+        public async Task<bool> SearchUrlAlreadyExist(string userId, string searchUrl)
+        {
+            var user = await this._userManager.FindByIdAsync(userId);
+            return user.SearchUrls.Contains(searchUrl);
+        }
     }
 }

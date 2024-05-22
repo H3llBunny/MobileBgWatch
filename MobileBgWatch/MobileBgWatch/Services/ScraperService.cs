@@ -7,19 +7,19 @@ namespace MobileBgWatch.Services
 {
     public class ScraperService : IScraperService
     {
-        private IBrowsingContext context;
+        private IBrowsingContext _context;
 
-        public ScraperService()
+        public ScraperService(IBrowsingContext context)
         {
-            this.context = BrowsingContext.New(Configuration.Default.WithDefaultLoader());
+            this._context = context;
         }
 
         public async Task<IEnumerable<string>> GetAllVehicleAdUrlsAsync(string searchUrl)
         {
             var vehicleUrls = new List<string>();
             string initialUrl = searchUrl;
-            
-            var initialDocument = await this.context.OpenAsync(initialUrl);
+
+            var initialDocument = await this._context.OpenAsync(initialUrl);
 
             int totalPages = 0;
             var paginationElement = initialDocument.QuerySelector("div.pagination a.saveSlink.gray");
@@ -52,7 +52,7 @@ namespace MobileBgWatch.Services
                         currentPageUrl = initialUrl + $"/p-{page}";
                     }
 
-                    var currentPageDocument = await context.OpenAsync(currentPageUrl);
+                    var currentPageDocument = await _context.OpenAsync(currentPageUrl);
 
                     var vehicleAdLinks = currentPageDocument.QuerySelectorAll("div.photo div.big a");
 
@@ -76,62 +76,70 @@ namespace MobileBgWatch.Services
         {
             var vehicleList = new List<Vehicle>();
 
-            foreach (var url in vehicleUrls)
+            try
             {
-                var document = await this.context.OpenAsync(url);
-                string name = document.QuerySelector("div.obTitle").FirstChild.Text().Trim();
-                var secondPartOfName = document.QuerySelector("div.obTitle span");
-                if (secondPartOfName != null)
+                foreach (var url in vehicleUrls)
                 {
-                    name += $" - {secondPartOfName.TextContent.Trim()}";
-                }
-                long vehicleAdId = long.Parse(document.QuerySelector("div.obiava").TextContent.Trim().Where(char.IsDigit).ToArray());
-                string location = document.QuerySelector("div.carLocation span").Text();
-                bool vatIncluded = false;
-                if (document.QuerySelector("div.PriceInfo").Text() == "Цената е с включено ДДС")
-                {
-                    vatIncluded = true;
-                }
-                int price = int.Parse(document.QuerySelector("div.Price").FirstChild.TextContent.Trim().Where(char.IsDigit).ToArray());
-                string currency = document.QuerySelector("div.Price").FirstChild.TextContent.Trim().Split().Last();
-                var currentPrice = new VehiclePrice
-                {
-                    Price = price,
-                    Currency = currency,
-                    Date = DateTime.Today,
-                    IncludeVat = vatIncluded
-                };
-                var specifications = new Dictionary<string, string>();
-                var itemElements = document.QuerySelectorAll("div.techData div.item");
-                foreach (var itemElement in itemElements)
-                {
-                    string key = itemElement.Children[0].Text();
-                    string value = itemElement.Children[1].Text();
-                    specifications.Add(key, value);
-                }
-                var imgUrlElements = document.QuerySelectorAll("img.carouselimg");
-                var imgUrls = new List<string>();
-                foreach (var imgUrlElement in imgUrlElements)
-                {
-                    imgUrls.Add("https:" + imgUrlElement.GetAttribute("data-src-gallery"));
-                }
+                    var document = await this._context.OpenAsync(url);
+                    string name = document.QuerySelector("div.obTitle").FirstChild.Text().Trim();
+                    var secondPartOfName = document.QuerySelector("div.obTitle span");
+                    if (secondPartOfName != null)
+                    {
+                        name += $" - {secondPartOfName.TextContent.Trim()}";
+                    }
+                    long vehicleAdId = long.Parse(document.QuerySelector("div.obiava").TextContent.Trim().Where(char.IsDigit).ToArray());
+                    string location = document.QuerySelector("div.carLocation span").Text();
+                    bool vatIncluded = false;
+                    var vatCheck = document.QuerySelector("div.PriceInfo");
+                    if (vatCheck != null)
+                    {
+                        vatIncluded = vatCheck.Text() == "Цената е с включено ДДС" ? true : false;
+                    }
+                    int price = int.Parse(document.QuerySelector("div.Price").FirstChild.TextContent.Trim().Where(char.IsDigit).ToArray());
+                    string currency = document.QuerySelector("div.Price").FirstChild.TextContent.Trim().Split().Last();
+                    var currentPrice = new VehiclePrice
+                    {
+                        Price = price,
+                        Currency = currency,
+                        Date = DateTime.UtcNow,
+                        IncludeVat = vatIncluded
+                    };
+                    var specifications = new Dictionary<string, string>();
+                    var itemElements = document.QuerySelectorAll("div.techData div.item");
+                    foreach (var itemElement in itemElements)
+                    {
+                        string key = itemElement.Children[0].Text();
+                        string value = itemElement.Children[1].Text();
+                        specifications.Add(key, value);
+                    }
+                    var imgUrlElements = document.QuerySelectorAll("img.carouselimg");
+                    var imgUrls = new List<string>();
+                    foreach (var imgUrlElement in imgUrlElements)
+                    {
+                        imgUrls.Add("https:" + imgUrlElement.GetAttribute("data-src-gallery"));
+                    }
 
-                var vehicle = new Vehicle
-                {
-                    UserId = userId,
-                    SearchUrl = searchUrl,
-                    VehicleAdId = vehicleAdId,
-                    Name = name,
-                    DateAdded = DateTime.Today,
-                    CurrentPrice = currentPrice,
-                    PreviousPrice = null,
-                    Url = url,
-                    Location = location,
-                    Specifications = specifications,
-                    ImageUrls = imgUrls,
-                };
+                    var vehicle = new Vehicle
+                    {
+                        UserId = userId,
+                        SearchUrl = searchUrl,
+                        VehicleAdId = vehicleAdId,
+                        Name = name,
+                        DateAdded = DateTime.UtcNow,
+                        CurrentPrice = currentPrice,
+                        PreviousPrice = new VehiclePrice { Price = 0, Currency = currentPrice.Currency, Date = DateTime.Today, IncludeVat = currentPrice.IncludeVat },
+                        Url = url,
+                        Location = location,
+                        Specifications = specifications,
+                        ImageUrls = imgUrls,
+                    };
 
-                vehicleList.Add(vehicle);
+                    vehicleList.Add(vehicle);
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
             }
 
             return vehicleList;

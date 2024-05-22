@@ -1,6 +1,7 @@
-using Microsoft.Extensions.Configuration;
+using AngleSharp;
 using MobileBgWatch.Models;
 using MobileBgWatch.Services;
+using MongoDB.Driver;
 
 namespace MobileBgWatch
 {
@@ -12,7 +13,7 @@ namespace MobileBgWatch
 
             builder.Services.AddSingleton<MongoDbConfig>(sp =>
             {
-                var configuration = sp.GetRequiredService<IConfiguration>();
+                var configuration = sp.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
                 return configuration.GetSection(nameof(MongoDbConfig)).Get<MongoDbConfig>();
             });
 
@@ -29,6 +30,20 @@ namespace MobileBgWatch
                 options.User.RequireUniqueEmail = true;
             })
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, string>(mongoDbSettings.ConnectionString, mongoDbSettings.Database);
+
+            builder.Services.AddSingleton<IBrowsingContext>(provider =>
+            {
+                var config = Configuration.Default.WithDefaultLoader();
+                return BrowsingContext.New(config);
+            });
+
+            builder.Services.AddSingleton<IMongoCollection<ApplicationUser>>(sp =>
+            {
+                var mongoDbConfig = sp.GetRequiredService<MongoDbConfig>();
+                var client = new MongoClient(mongoDbConfig.ConnectionString);
+                var database = client.GetDatabase(mongoDbConfig.Database);
+                return database.GetCollection<ApplicationUser>("Users");
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

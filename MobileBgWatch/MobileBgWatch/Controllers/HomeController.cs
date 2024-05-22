@@ -4,6 +4,7 @@ using MobileBgWatch.Models;
 using MobileBgWatch.Services;
 using MobileBgWatch.ViewModels;
 using System.Diagnostics;
+using System.Net;
 using System.Security.Claims;
 
 namespace MobileBgWatch.Controllers
@@ -31,7 +32,7 @@ namespace MobileBgWatch.Controllers
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            SearchUrlsListViewModel searchUrlsViewModel = await this._vehicleService.GetSearchUrlsAsync(userId);
+            SearchUrlsListViewModel searchUrlsViewModel = await this._vehicleService.GetSearchUrlsListAsync(userId, 40);
 
             return View(searchUrlsViewModel);
         }
@@ -49,7 +50,7 @@ namespace MobileBgWatch.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddSearchUrl(string searchUrl)
+        public async Task<IActionResult> AddSearchUrl(string searchUrl, bool addToUser = true)
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
@@ -64,14 +65,25 @@ namespace MobileBgWatch.Controllers
                 return View("Index");
             }
 
+            if (addToUser)
+            {
+                if (await this._usersService.SearchUrlAlreadyExist(userId, searchUrl))
+                {
+                    ViewBag.ErrorMessage = "Search Url already exist.";
+                    return View("Index");
+                }
+            }
+
             try
             {
-                var vehicleUrls = (await _scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
+                var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
                 var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
                 await this._vehicleService.AddVehicleAsync(vehicleList);
-                await this._vehicleService.AddSearchUrlToUserAsync(userId, searchUrl);
-
-                TempData["SuccessMessage"] = "New search URL has been successfully added.";
+                if (addToUser)
+                {
+                    await this._vehicleService.AddSearchUrlToUserAsync(userId, searchUrl);
+                    TempData["SuccessMessage"] = "New search URL has been successfully added.";
+                }
             }
             catch (Exception ex)
             {
@@ -80,6 +92,13 @@ namespace MobileBgWatch.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> RefreshAds(string searchUrl)
+        {
+            return await AddSearchUrl(searchUrl, addToUser: false);
         }
     }
 }

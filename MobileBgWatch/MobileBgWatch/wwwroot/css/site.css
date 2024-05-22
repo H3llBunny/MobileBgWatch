@@ -18,7 +18,11 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
+    height: 100%;
+}
+
+.btn-primary {
+    background-color: #007acc;
 }
 
 .btn-secondary {
@@ -28,6 +32,11 @@ body {
     .btn-secondary:hover {
         background-color: #890606; /* Darker shade for hover state */
     }
+
+#searchUrlh5 {
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
 
 #searchUrlInput {
     background-color: #212121;
@@ -116,4 +125,17 @@ body {
 
 .item_previous_price {
     font-weight: 800;
+}
+
+.item_previous_currency {
+    font-weight: 800;
+}
+
+footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    height: 80px;
+    display: flex;
+    align-items: center;
 }
