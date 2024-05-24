@@ -27,7 +27,7 @@ namespace MobileBgWatch.Services
                 {
                     if (await ChangeInPriceAsync(vehicle))
                     {
-                        await UpdateVehiclePrice(vehicle);
+                        await UpdateVehiclePriceAsync(vehicle);
                         removeIdentifiers.Add(vehicle.VehicleAdId);
                         continue;
                     }
@@ -60,10 +60,12 @@ namespace MobileBgWatch.Services
             {
                 var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, url);
                 var vehiclesQuery = this._vehiclesCollection.Find(filter).SortByDescending(v => v.Id);
+                int totalAdsCount = await GetTotalAdsCountAsync(url);
                 var vehicles = await (count.HasValue ? vehiclesQuery.Limit(count.Value) : vehiclesQuery).ToListAsync();
                 var searchUrlModel = new SearchUrlViewModel
                 {
                     SearchUrl = url,
+                    TotalAdsCount = totalAdsCount,
                     Vehicles = vehicles.Select(v => new VehicleInListViewModel
                     {
                         Id = v.Id,
@@ -106,7 +108,7 @@ namespace MobileBgWatch.Services
             return vehicleFromDb.CurrentPrice.Price != vehicle.CurrentPrice.Price;
         }
 
-        public async Task UpdateVehiclePrice(Vehicle vehicle)
+        public async Task UpdateVehiclePriceAsync(Vehicle vehicle)
         {
             var filter = Builders<Vehicle>.Filter.Eq(v => v.VehicleAdId, vehicle.VehicleAdId);
 
@@ -123,6 +125,37 @@ namespace MobileBgWatch.Services
             };
 
             await this._vehiclesCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
+
+        public async Task<int> GetTotalAdsCountAsync(string searchUrl)
+        {
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl);
+            var vehiclesQuery = this._vehiclesCollection.Find(filter).SortByDescending(v => v.Id);
+            var totalVehicles = await vehiclesQuery.ToListAsync();
+            return totalVehicles.Count();
+        }
+
+        public async Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int page, int vehiclesPerPage)
+        {
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl);
+            var projection = Builders<Vehicle>.Projection.Expression(v => new VehicleInListViewModel
+            {
+                Id = v.Id,
+                ImageUrl = v.ImageUrls.FirstOrDefault(),
+                Name = v.Name,
+                CurrentPrice = v.CurrentPrice,
+                PreviousPrice = v.PreviousPrice
+            });
+
+            var vehicles = await this._vehiclesCollection
+                .Find(filter)
+                .SortByDescending(v => v.Id)
+                .Skip((page - 1) * vehiclesPerPage)
+                .Limit(vehiclesPerPage)
+                .Project(projection)
+                .ToListAsync();
+
+            return vehicles;
         }
     }
 }

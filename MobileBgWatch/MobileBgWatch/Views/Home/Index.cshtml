@@ -39,8 +39,9 @@
             {
                 <h5 id="searchUrlh5">
                     <a class="btn btn-primary" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()">Refresh</a>
-                    <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()</b> vehicle ads for search link:
-                    <b>@url.SearchUrl</b>
+                    <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
+                    <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
+                    <b style="font-size: 12px;">@url.SearchUrl</b>
                 </h5>
                 @if (ViewBag.Message != null)
                 {
@@ -77,11 +78,11 @@
                                         </div>
                                         <div class="price_container">
                                             <p class="item_price @currentPriceClass">
-                                                @vehicle.CurrentPrice.Price <span class="item_price_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
+                                                @vehicle.CurrentPrice.Price.ToString("N0") <span class="item_price_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
                                             </p>
                                             <p class="item_previous">
                                                 Previous price:
-                                                <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price</span>
+                                                <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0")</span>
                                                 <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
                                             </p>
                                         </div>

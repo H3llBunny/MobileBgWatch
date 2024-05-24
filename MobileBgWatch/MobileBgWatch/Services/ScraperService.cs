@@ -81,7 +81,12 @@ namespace MobileBgWatch.Services
                 foreach (var url in vehicleUrls)
                 {
                     var document = await this._context.OpenAsync(url);
-                    string name = document.QuerySelector("div.obTitle").FirstChild.Text().Trim();
+                    var nameElement = document.QuerySelector("div.obTitle");
+                    if (nameElement == null)
+                    {
+                        continue;
+                    }
+                    string name = nameElement.FirstChild.Text().Trim();
                     var secondPartOfName = document.QuerySelector("div.obTitle span");
                     if (secondPartOfName != null)
                     {
