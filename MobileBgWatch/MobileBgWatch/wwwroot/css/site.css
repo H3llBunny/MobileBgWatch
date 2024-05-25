@@ -57,8 +57,21 @@ main {
     margin-right: 10px;
 }
 
+#searchUrlh5 {
+    box-sizing: border-box;
+    background: #212121;
+    justify-content: space-around;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 4px;
+    border: 2px solid #3d3d3d;
+    padding: 5px;
+    overflow: hidden;
+}
+
 #searchUrlBox form {
     padding-bottom: 10px;
+    margin-left: 4px;
 }
 
 .ul_container {
