@@ -99,7 +99,10 @@ namespace MobileBgWatch.Services
 
         public bool DoesVehicleAdExist(Vehicle vehicle)
         {
-            return this._vehiclesCollection.AsQueryable().Any(v => v.VehicleAdId == vehicle.VehicleAdId);
+            return this._vehiclesCollection.AsQueryable()
+                .Any(v => v.VehicleAdId == vehicle.VehicleAdId
+                        && v.SearchUrl == vehicle.SearchUrl
+                        && v.UserId == vehicle.UserId);
         }
 
         public async Task<bool> ChangeInPriceAsync(Vehicle vehicle)

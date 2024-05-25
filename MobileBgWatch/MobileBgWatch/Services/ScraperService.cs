@@ -119,9 +119,16 @@ namespace MobileBgWatch.Services
                     }
                     var imgUrlElements = document.QuerySelectorAll("img.carouselimg");
                     var imgUrls = new List<string>();
-                    foreach (var imgUrlElement in imgUrlElements)
+                    if (imgUrlElements.Length > 0)
                     {
-                        imgUrls.Add("https:" + imgUrlElement.GetAttribute("data-src-gallery"));
+                        foreach (var imgUrlElement in imgUrlElements)
+                        {
+                            imgUrls.Add("https:" + imgUrlElement.GetAttribute("data-src-gallery"));
+                        }
+                    }
+                    else
+                    {
+                        imgUrls.Add("/images/noImage.jpg");
                     }
 
                     var vehicle = new Vehicle
