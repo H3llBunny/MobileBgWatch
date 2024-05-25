@@ -50,7 +50,7 @@ namespace MobileBgWatch.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> AddSearchUrl(string searchUrl, bool addToUser = true)
+        public async Task<IActionResult> AddSearchUrl(string searchUrl)
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
@@ -65,13 +65,10 @@ namespace MobileBgWatch.Controllers
                 return View("Index");
             }
 
-            if (addToUser)
+            if (await this._usersService.SearchUrlAlreadyExist(userId, searchUrl))
             {
-                if (await this._usersService.SearchUrlAlreadyExist(userId, searchUrl))
-                {
-                    ViewBag.ErrorMessage = "Search Url already exist.";
-                    return View("Index");
-                }
+                ViewBag.ErrorMessage = "Search Url already exist.";
+                return View("Index");
             }
 
             try
@@ -79,11 +76,8 @@ namespace MobileBgWatch.Controllers
                 var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
                 var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
                 await this._vehicleService.AddVehicleAsync(vehicleList);
-                if (addToUser)
-                {
-                    await this._vehicleService.AddSearchUrlToUserAsync(userId, searchUrl);
-                    TempData["SuccessMessage"] = "New search URL has been successfully added.";
-                }
+                await this._vehicleService.AddSearchUrlToUserAsync(userId, searchUrl);
+                TempData["SuccessMessage"] = "New search URL has been successfully added.";
             }
             catch (Exception ex)
             {
@@ -98,7 +92,33 @@ namespace MobileBgWatch.Controllers
         [Authorize]
         public async Task<IActionResult> RefreshAds(string searchUrl)
         {
-            return await AddSearchUrl(searchUrl, addToUser: false);
+            if (string.IsNullOrWhiteSpace(searchUrl))
+            {
+                ViewBag.ErrorMessage = "Please ensure the URL is valid and try again";
+                return View("Index");
+            }
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!await this._usersService.UserSearchUrlLimitAsync(userId))
+            {
+                ViewBag.ErrorMessage = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
+                return View("Index");
+            }
+
+            try
+            {
+                var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
+                var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
+                await this._vehicleService.AddVehicleAsync(vehicleList);
+                await this._vehicleService.DeletedSoldVehiclesAsync(vehicleList);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("Index");
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

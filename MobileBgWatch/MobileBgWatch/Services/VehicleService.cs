@@ -160,5 +160,26 @@ namespace MobileBgWatch.Services
 
             return vehicles;
         }
+
+        public async Task DeletedSoldVehiclesAsync(ICollection<Vehicle> currentVehicles)
+        {
+            try
+            {
+                var currentVehicleAdIds = currentVehicles.Select(cv => cv.VehicleAdId).ToList();
+
+                // Construct the filter to delete vehicles not present in the current list
+                var filter = Builders<Vehicle>.Filter.And(
+                    Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, currentVehicles.FirstOrDefault()?.SearchUrl),
+                    Builders<Vehicle>.Filter.Eq(v => v.UserId, currentVehicles.FirstOrDefault()?.UserId),
+                    Builders<Vehicle>.Filter.Not(Builders<Vehicle>.Filter.In(v => v.VehicleAdId, currentVehicleAdIds)));
+
+                // Delete vehicles matching the filter
+                await this._vehiclesCollection.DeleteManyAsync(filter);
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+            }
+        }
     }
 }

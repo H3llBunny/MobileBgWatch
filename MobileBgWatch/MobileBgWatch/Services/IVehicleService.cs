@@ -20,5 +20,7 @@ namespace MobileBgWatch.Services
         Task UpdateVehiclePriceAsync(Vehicle vehicle);
 
         Task<int> GetTotalAdsCountAsync(string searchUrl);
+
+        Task DeletedSoldVehiclesAsync(ICollection<Vehicle> currentVehicles);
     }
 }
