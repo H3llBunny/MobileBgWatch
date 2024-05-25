@@ -76,7 +76,7 @@ namespace MobileBgWatch.Controllers
                 var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
                 var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
                 await this._vehicleService.AddVehicleAsync(vehicleList);
-                await this._vehicleService.AddSearchUrlToUserAsync(userId, searchUrl);
+                await this._usersService.AddSearchUrlToUserAsync(userId, searchUrl);
                 TempData["SuccessMessage"] = "New search URL has been successfully added.";
             }
             catch (Exception ex)
@@ -115,6 +115,30 @@ namespace MobileBgWatch.Controllers
             catch (Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
+                return View("Index");
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> DeleteUrl(string searchUrl)
+        {
+            if (string.IsNullOrWhiteSpace(searchUrl))
+            {
+                ViewBag.ErrorMessage = "Please ensure the URL is valid and try again";
+                return View("Index");
+            }
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            try
+            {
+                await this._usersService.DeleteSearchUrlAsync(userId, searchUrl);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = "An error occurred while updating the database.";
                 return View("Index");
             }
 

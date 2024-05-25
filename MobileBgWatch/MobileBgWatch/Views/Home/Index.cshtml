@@ -40,6 +40,7 @@
                 <h5 id="searchUrlh5">
                     <a class="btn btn-primary" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()">Refresh</a>
                     <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
+                    <a class="btn btn-secondary" asp-action="DeleteUrl" asp-route-searchUrl="@url.SearchUrl.ToString()">Delete Link</a>
                     <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
                     <b style="font-size: 12px;">@url.SearchUrl</b>
                 </h5>

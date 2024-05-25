@@ -11,8 +11,6 @@ namespace MobileBgWatch.Services
 
         Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int page, int vehiclesPerPage);
 
-        Task AddSearchUrlToUserAsync(string userId, string searchUrl);
-
         bool DoesVehicleAdExist(Vehicle vehicle);
 
         Task<bool> ChangeInPriceAsync(Vehicle vehicle);

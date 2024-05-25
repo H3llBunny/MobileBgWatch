@@ -79,22 +79,13 @@ namespace MobileBgWatch.Services
                 searchUrlList.SearchUrls.Add(searchUrlModel);
             }
 
-            return searchUrlList;
-        }
-
-        public async Task AddSearchUrlToUserAsync(string userId, string searchUrl)
-        {
-            var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
-            var user = await this._userCollection.Find(filter).FirstOrDefaultAsync();
-            var update = Builders<ApplicationUser>.Update
-                .Push(u => u.SearchUrls, searchUrl);
-
-            var options = new FindOneAndUpdateOptions<ApplicationUser>
+            searchUrlList.SearchUrls.Reverse();
+            var reversedSearchUrlList = new SearchUrlsListViewModel
             {
-                ReturnDocument = ReturnDocument.After
+                SearchUrls = searchUrlList.SearchUrls.Reverse().ToList()
             };
 
-            await this._userCollection.FindOneAndUpdateAsync(filter, update, options);
+            return reversedSearchUrlList;
         }
 
         public bool DoesVehicleAdExist(Vehicle vehicle)
