@@ -38,7 +38,7 @@
             @foreach (var url in Model.SearchUrls)
             {
                 <h5 id="searchUrlh5">
-                    <a class="btn btn-primary" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()">Refresh</a>
+                    <a class="btn btn-primary refresh-button" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()">Refresh</a>
                     <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
                     <a class="btn btn-secondary" asp-action="DeleteUrl" asp-route-searchUrl="@url.SearchUrl.ToString()">Delete Link</a>
                     <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
@@ -117,5 +117,27 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         checkInput();
+    });
+
+    function storeScrollPosition() {
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+    }
+
+    function restoreScrollPosition() {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition));
+            sessionStorage.removeItem('scrollPosition');
+        }
+    }
+
+    // Event listener for DOMContentLoaded event (page load)
+    document.addEventListener('DOMContentLoaded', restoreScrollPosition);
+
+    document.addEventListener('click', function (event) {
+        const refreshButton = event.target.closest('.refresh-button');
+        if (refreshButton) {
+            window.addEventListener('beforeunload', storeScrollPosition);
+        }
     });
 </script>
