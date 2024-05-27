@@ -20,5 +20,7 @@ namespace MobileBgWatch.Services
         Task<int> GetTotalAdsCountAsync(string searchUrl);
 
         Task DeletedSoldVehiclesAsync(ICollection<Vehicle> currentVehicles);
+
+        Task ImageUrlUpdaterAsync(Vehicle vehicle);
     }
 }

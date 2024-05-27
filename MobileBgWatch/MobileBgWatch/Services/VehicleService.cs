@@ -25,6 +25,8 @@ namespace MobileBgWatch.Services
             {
                 if (DoesVehicleAdExist(vehicle))
                 {
+                    await ImageUrlUpdaterAsync(vehicle);
+                    
                     if (await ChangeInPriceAsync(vehicle))
                     {
                         await UpdateVehiclePriceAsync(vehicle);
@@ -170,6 +172,16 @@ namespace MobileBgWatch.Services
             catch (Exception ex)
             {
                 await Console.Out.WriteLineAsync(ex.Message);
+            }
+        }
+
+        public async Task ImageUrlUpdaterAsync(Vehicle vehicle)
+        {
+            var vehicleFromDb = await this._vehiclesCollection.Find(v => v.VehicleAdId == vehicle.VehicleAdId).FirstOrDefaultAsync();
+            if (!vehicleFromDb.ImageUrls.SequenceEqual(vehicle.ImageUrls))
+            {
+                vehicleFromDb.ImageUrls = vehicle.ImageUrls;
+                await this._vehiclesCollection.ReplaceOneAsync(v => v.VehicleAdId == vehicleFromDb.VehicleAdId, vehicleFromDb);
             }
         }
     }
