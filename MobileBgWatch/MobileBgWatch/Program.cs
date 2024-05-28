@@ -1,5 +1,6 @@
 using AngleSharp;
 using MobileBgWatch.Models;
+using MobileBgWatch.Profiles;
 using MobileBgWatch.Services;
 using MongoDB.Driver;
 
@@ -51,6 +52,8 @@ namespace MobileBgWatch
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IScraperService, ScraperService>();
             builder.Services.AddScoped<IVehicleService, VehicleService>();
+
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.

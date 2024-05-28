@@ -22,5 +22,7 @@ namespace MobileBgWatch.Services
         Task DeletedSoldVehiclesAsync(ICollection<Vehicle> currentVehicles);
 
         Task ImageUrlUpdaterAsync(Vehicle vehicle);
+
+        Task<VehicleViewModel> GetVehicleByAdIdAsync(long vehicleAdId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using MobileBgWatch.Models;
+﻿using AutoMapper;
+using MobileBgWatch.Models;
 using MobileBgWatch.ViewModels;
 using MongoDB.Driver;
 
@@ -7,14 +8,18 @@ namespace MobileBgWatch.Services
     public class VehicleService : IVehicleService
     {
         private readonly IMongoCollection<Vehicle> _vehiclesCollection;
+        private readonly MongoDbConfig config;
         private readonly IMongoCollection<ApplicationUser> _userCollection;
+        private readonly IMapper _mapper;
 
-        public VehicleService(MongoDbConfig config, IMongoCollection<ApplicationUser> userCollection)
+        public VehicleService(MongoDbConfig config, IMongoCollection<ApplicationUser> userCollection, IMapper mapper)
         {
             var client = new MongoClient(config.ConnectionString);
             var database = client.GetDatabase(config.Database);
             this._vehiclesCollection = database.GetCollection<Vehicle>("Vehicles");
+            this.config = config;
             this._userCollection = userCollection;
+            this._mapper = mapper;
         }
 
         public async Task AddVehicleAsync(ICollection<Vehicle> vehicles)
@@ -73,6 +78,7 @@ namespace MobileBgWatch.Services
                         Id = v.Id,
                         ImageUrl = v.ImageUrls.FirstOrDefault(),
                         Name = v.Name,
+                        VehicleAdId = v.VehicleAdId,
                         CurrentPrice = v.CurrentPrice,
                         PreviousPrice = v.PreviousPrice
                     }).ToList()
@@ -139,6 +145,7 @@ namespace MobileBgWatch.Services
                 Id = v.Id,
                 ImageUrl = v.ImageUrls.FirstOrDefault(),
                 Name = v.Name,
+                VehicleAdId = v.VehicleAdId,
                 CurrentPrice = v.CurrentPrice,
                 PreviousPrice = v.PreviousPrice
             });
@@ -183,6 +190,13 @@ namespace MobileBgWatch.Services
                 vehicleFromDb.ImageUrls = vehicle.ImageUrls;
                 await this._vehiclesCollection.ReplaceOneAsync(v => v.VehicleAdId == vehicleFromDb.VehicleAdId, vehicleFromDb);
             }
+        }
+
+        public async Task<VehicleViewModel> GetVehicleByAdIdAsync(long vehicleAdId)
+        {
+            var vehicleFromDb = await this._vehiclesCollection.Find(v => v.VehicleAdId == vehicleAdId).FirstOrDefaultAsync();
+
+            return this._mapper.Map<VehicleViewModel>(vehicleFromDb);
         }
     }
 }

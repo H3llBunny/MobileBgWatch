@@ -53,7 +53,7 @@
 
 
                 <li class="new_item">
-                    <a class="no_underline" asp-action="ById" asp-route-id="@vehicle.Id">
+                    <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
                         <div class="item_pic">
                             <img src="@vehicle.ImageUrl"
                                  title="@vehicle.Name" />
