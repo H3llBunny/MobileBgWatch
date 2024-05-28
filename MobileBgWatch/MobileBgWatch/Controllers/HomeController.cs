@@ -135,6 +135,7 @@ namespace MobileBgWatch.Controllers
             try
             {
                 await this._usersService.DeleteSearchUrlAsync(userId, searchUrl);
+                TempData["SuccessMessage"] = "Link has been successfully deleted.";
             }
             catch (Exception ex)
             {
