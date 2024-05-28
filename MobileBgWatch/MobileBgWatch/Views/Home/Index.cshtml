@@ -6,52 +6,52 @@
 @{
     @if (ViewBag.ErrorMessage != null)
     {
-                    <div class="alert alert-danger col-md-6">
-                        @ViewBag.ErrorMessage
-                    </div>
+        <div class="alert alert-danger col-md-6">
+            @ViewBag.ErrorMessage
+        </div>
     }
 
     @if (TempData["LimitMessage"] != null)
     {
-                    <div class="alert alert-warning col-md-6">
-                        @TempData["LimitMessage"]
-                    </div>
+        <div class="alert alert-warning col-md-6">
+            @TempData["LimitMessage"]
+        </div>
     }
 
     @if (TempData["SuccessMessage"] != null)
     {
-                    <div class="alert alert-success col-md-6">
-                        @TempData["SuccessMessage"]
-                    </div>
+        <div class="alert alert-success col-md-6">
+            @TempData["SuccessMessage"]
+        </div>
     }
 
     if (User?.Identity?.IsAuthenticated ?? false)
     {
-                    <div id="searchUrlBox" class="col-md-6">
-                        <form asp-action="AddSearchUrl" method="post" class="d-flex align-items-center">
-                            <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Type your mobile.bg search url item link" oninput="checkInput()" />
-                            <input id="submitButton" class="btn btn-primary" type="submit" value="Add" disabled />
-                        </form>
-                    </div>
-    @if (Model?.SearchUrls != null)
+        <div id="searchUrlBox" class="col-md-6">
+            <form asp-action="AddSearchUrl" method="post" class="d-flex align-items-center">
+                <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Type your mobile.bg search url item link" oninput="checkInput()" />
+                <input id="submitButton" class="btn btn-primary" type="submit" value="Add" disabled />
+            </form>
+        </div>
+        @if (Model?.SearchUrls != null)
         {
-    @foreach (var url in Model.SearchUrls)
+            @foreach (var url in Model.SearchUrls)
             {
-                            <h5 id="searchUrlh5">
-                                <a class="btn btn-primary refresh-button" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()">Refresh</a>
-                                <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
-                                <a class="btn btn-secondary delete-button" href="#" data-url="@url.SearchUrl.ToString()">Delete Link</a>
-                                <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
-                                <b style="font-size: 13px;">@url.SearchUrl</b>
-                            </h5>
-    @if (ViewBag.Message != null)
+                <h5 id="searchUrlh5">
+                    <a class="btn btn-primary refresh-button" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()">Refresh</a>
+                    <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
+                    <a class="btn btn-secondary delete-button" href="#" data-url="@url.SearchUrl.ToString()">Delete Link</a>
+                    <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
+                    <b style="font-size: 13px;">@url.SearchUrl</b>
+                </h5>
+                @if (ViewBag.Message != null)
                 {
-                                <div class="alert alert-info">@ViewBag.Message</div>
+                    <div class="alert alert-info">@ViewBag.Message</div>
                 }
                 else
                 {
-                                <ul class="ul_container">
-                                    @foreach (var vehicle in url.Vehicles)
+                    <ul class="ul_container">
+                        @foreach (var vehicle in url.Vehicles)
                         {
                             string currentPriceClass;
                             string previousPriceClass;
@@ -67,44 +67,44 @@
                             }
 
 
-                                        <li class="new_item">
-                                            <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
-                                                <div class="item_pic">
-                                                    <img src="@vehicle.ImageUrl"
-                                                         title="@vehicle.Name" />
-                                                </div>
-                                                <div class="name_and_price">
-                                                    <div class="item_text">
-                                                        @vehicle.Name
-                                                    </div>
-                                                    <div class="price_container">
-                                                        <p class="item_price @currentPriceClass">
-                                                            @vehicle.CurrentPrice.Price.ToString("N0") <span class="item_price_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
-                                                        </p>
-                                                        <p class="item_previous">
-                                                            Previous price:
-                                                            <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0")</span>
-                                                            <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
+                            <li class="new_item">
+                                <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
+                                    <div class="item_pic">
+                                        <img src="@vehicle.ImageUrl"
+                                             title="@vehicle.Name" />
+                                    </div>
+                                    <div class="name_and_price">
+                                        <div class="item_text">
+                                            @vehicle.Name
+                                        </div>
+                                        <div class="price_container">
+                                            <p class="item_price @currentPriceClass">
+                                                @vehicle.CurrentPrice.Price.ToString("N0") <span class="item_price_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
+                                            </p>
+                                            <p class="item_previous">
+                                                Previous price:
+                                                <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0")</span>
+                                                <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
                         }
-                                </ul>
+                    </ul>
                 }
             }
         }
     }
     else
     {
-                    <div class="main-div">
-                        <div class="text-center">
-                            <h2 class="welcome-header">Welcome to MobileBgWatch!</h2>
-                            <p></p>
-                            <h4>A simple web app that helps you monitor specific searches from mobile.bg.</h4>
-                        </div>
-                    </div>
+        <div class="main-div">
+            <div class="text-center">
+                <h2 class="welcome-header">Welcome to MobileBgWatch!</h2>
+                <p></p>
+                <h4>A simple web app that helps you monitor specific searches from mobile.bg.</h4>
+            </div>
+        </div>
     }
 }
 
