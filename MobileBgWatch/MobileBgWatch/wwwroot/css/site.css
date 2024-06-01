@@ -212,7 +212,7 @@ footer {
 .carousel-container {
     max-width: 800px;
     height: 650px;
-    border: 2px solid #3d3d3d;
+   /* border: 2px solid #3d3d3d;*/
 }
 
 div#carousel-main.carousel.slide {
@@ -241,7 +241,7 @@ img.carousel-image {
     max-width: 1000px;
     display: block;
     margin: 0px;
-    border: 2px solid #3d3d3d;
+    /*border: 2px solid #3d3d3d;*/
     margin-top: 10px;
     position: unset;
 }
@@ -273,4 +273,20 @@ img.carousel-image {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+
+div#left {
+    max-width: 800px;
+    min-width: 100px;
+}
+
+div.info-container {
+    margin-left: 40px;
+    max-width: 600px;
+}
+
+div.adName {
+    font-size: 30px;
+    font-weight: 700;
 }
