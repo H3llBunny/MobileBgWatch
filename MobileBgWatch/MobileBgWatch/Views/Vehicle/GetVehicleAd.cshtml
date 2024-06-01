@@ -20,17 +20,44 @@
             <button class="carousel-control-next" type="button" data-bs-target="#carousel-main" data-bs-slide="next">
                 <span class="carousel-control-next-icon"></span>
             </button>
+            <div class="carousel-indicators">
+                <button type="button" class="active" data-bs-target="#carousel-main" data-bs-slide-to="0">
+                    <img src="@Model.ImageUrls.FirstOrDefault()" />
+                </button>
+                @for (int i = 1; i < Model.ImageUrls.Count; i++)
+                {
+                    <button type="button" data-bs-target="#carousel-main" data-bs-slide-to="@i">
+                        <img src="@Model.ImageUrls[i]" />
+                    </button>
+                }
+            </div>
         </div>
     </div>
-    <div class="carousel-indicators">
-        <button type="button" class="active" data-bs-target="#carousel-main" data-bs-slide-to="0">
-            <img src="@Model.ImageUrls.FirstOrDefault()" />
-        </button>
-        @for (int i = 1; i < Model.ImageUrls.Count; i++)
-        {
-            <button type="button" data-bs-target="#carousel-main" data-bs-slide-to="@i">
-                <img src="@Model.ImageUrls[i]" />
-            </button>
+</div>
+<!-- Placeholder div to mimic the size of the carousel-indicators -->
+<div class="carousel-indicators-placeholder"></div>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const indicators = document.querySelector('.carousel-indicators');
+        const placeholder = document.querySelector('.carousel-indicators-placeholder');
+
+        // Function to update the placeholder size
+        function updatePlaceholderSize() {
+            const indicatorsRect = indicators.getBoundingClientRect();
+            placeholder.style.width = `${indicatorsRect.width}px`;
+            placeholder.style.height = `${indicatorsRect.height}px`;
         }
-    </div>
-</div> 
+
+        // Create a ResizeObserver to watch for changes in the size of the indicators
+        const resizeObserver = new ResizeObserver(updatePlaceholderSize);
+
+        // Observe the indicators element
+        resizeObserver.observe(indicators);
+
+        // Initial size update
+        updatePlaceholderSize();
+    });
+</script>

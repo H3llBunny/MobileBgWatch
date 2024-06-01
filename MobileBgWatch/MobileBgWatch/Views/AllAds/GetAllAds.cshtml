@@ -51,7 +51,6 @@
                     previousPriceClass = "text-danger";
                 }
 
-
                 <li class="new_item">
                     <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
                         <div class="item_pic">
@@ -79,5 +78,4 @@
         </ul>
     }
     <partial name="_PagingPartial" model="@Model" />
-
 }

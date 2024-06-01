@@ -28,11 +28,11 @@ main {
 }
 
 .btn-secondary {
-    background-color: #007acc; /* Change to your desired background color */
+    background-color: #007acc;
 }
 
     .btn-secondary:hover {
-        background-color: #890606; /* Darker shade for hover state */
+        background-color: #890606;
     }
 
 #searchUrlh5 {
@@ -86,13 +86,13 @@ li.new_item {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    width: 300px; /* Adjust as needed for layout */
+    width: 300px;
     height: 350px;
     margin: 4px;
-    border: 2px solid #3d3d3d; /* Optional: for visualization */
-    padding: 5px; /* Optional: for spacing */
+    border: 2px solid #3d3d3d;
+    padding: 5px;
     box-sizing: border-box;
-    background: #212121; /* Optional: for background color */
+    background: #212121;
     overflow: hidden;
 }
 
@@ -161,7 +161,7 @@ a.no_underline {
     border: 0;
 }
 
-.pagination{
+.pagination {
     margin-top: 16px;
 }
 
@@ -196,20 +196,21 @@ footer {
     transform: translate(-50%, -50%);
 }
 
-[data-bs-theme=dark] .carousel .carousel-control-next-icon, [data-bs-theme=dark] .carousel .carousel-control-prev-icon, [data-bs-theme=dark].carousel .carousel-control-next-icon, [data-bs-theme=dark].carousel .carousel-control-prev-icon {
+[data-bs-theme=dark] .carousel .carousel-control-next-icon,
+[data-bs-theme=dark] .carousel .carousel-control-prev-icon,
+[data-bs-theme=dark].carousel .carousel-control-next-icon,
+[data-bs-theme=dark].carousel .carousel-control-prev-icon {
     filter: invert(0);
     width: 50%;
     height: 50%;
 }
 
-/*[data-bs-theme=dark] .carousel .carousel-indicators [data-bs-target], [data-bs-theme=dark].carousel .carousel-indicators [data-bs-target] {
-    background-color: white;
-    border: 2px solid gray;
+[data-bs-theme=dark] .carousel .carousel-indicators [data-bs-target], [data-bs-theme=dark].carousel .carousel-indicators [data-bs-target] {
+    background-color: transparent;
 }
-*/
 
 .carousel-container {
-    max-width: 1000px;
+    max-width: 800px;
     height: 650px;
     border: 2px solid #3d3d3d;
 }
@@ -235,6 +236,7 @@ img.carousel-image {
     height: 100%;
     object-fit: contain;
 }
+
 .carousel-indicators {
     max-width: 1000px;
     display: block;
@@ -244,19 +246,31 @@ img.carousel-image {
     position: unset;
 }
 
-.carousel-indicators img {
-    width: 70px;
-    display: block;
-}
-
-.carousel-indicators button {
-    width: max-content !important;
-}
-
-    .carousel-indicators button.active img {
-        border: 2px solid white;
+    .carousel-indicators img {
+        width: 70px;
+        display: block;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 70px;
+        height: 70px;
+        object-fit: contain;
     }
 
-.carousel-indicators button.active img {
-    border: 2px solid white;
+    .carousel-indicators button {
+        width: max-content !important;
+    }
+
+        .carousel-indicators button.active img {
+            border: 2px solid white;
+        }
+
+.carousel-indicators-placeholder {
+    margin-top: 10px;
+}
+
+.carousel-indicators-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
