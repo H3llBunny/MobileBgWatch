@@ -132,8 +132,17 @@ a.no_underline {
     flex-direction: column;
 }
 
-.item_price {
+.item_current {
     margin-bottom: 0px;
+    color: #b7b7b7;
+    margin-top: 5px;
+}
+
+.item_current_price {
+    font-weight: 800;
+}
+
+.item_current_currency {
     font-weight: 800;
 }
 
@@ -212,7 +221,7 @@ footer {
 .carousel-container {
     max-width: 800px;
     height: 650px;
-   /* border: 2px solid #3d3d3d;*/
+    /* border: 2px solid #3d3d3d;*/
 }
 
 div#carousel-main.carousel.slide {
@@ -289,4 +298,51 @@ div.info-container {
 div.adName {
     font-size: 30px;
     font-weight: 700;
+}
+
+div.location {
+    margin-top: 20px;
+}
+
+    div.location i {
+        color: #007bff;
+    }
+
+.price_container_vehicle {
+    margin-top: 30px;
+    font-size: 25px;
+}
+
+    .price_container_vehicle i {
+        font-size: 16px;
+    }
+
+span.vat {
+    font-size: 13px;
+}
+
+.date-added {
+    margin-top: 30px;
+}
+
+.date-added i {
+    color: coral;
+}
+
+.modal-content {
+    max-width: 1000px; 
+    width: 1000px;
+    height: auto;
+}
+
+.modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1000px;
+}
+
+.modal-body img {
+    width: 100%; 
+    height: auto;
 }

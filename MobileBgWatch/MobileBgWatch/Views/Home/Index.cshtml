@@ -77,9 +77,11 @@
                                         <div class="item_text">
                                             @vehicle.Name
                                         </div>
-                                        <div class="price_container">
-                                            <p class="item_price @currentPriceClass">
-                                                @vehicle.CurrentPrice.Price.ToString("N0") <span class="item_price_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
+                                        <div class="border-top price_container">
+                                            <p class="item_current">
+                                                Current price:
+                                                <span class="item_current_price @currentPriceClass">@vehicle.CurrentPrice.Price.ToString("N0")</span>
+                                                <span class="item_current_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
                                             </p>
                                             <p class="item_previous">
                                                 Previous price:
