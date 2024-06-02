@@ -98,6 +98,12 @@
     <Content Update="wwwroot\images\loading.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\images\mobilebg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\mobilebglogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\images\noImage.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -304,10 +304,6 @@ div.location {
     margin-top: 20px;
 }
 
-    div.location i {
-        color: #007bff;
-    }
-
 .price_container_vehicle {
     margin-top: 30px;
     font-size: 25px;
@@ -317,7 +313,7 @@ div.location {
         font-size: 16px;
     }
 
-span.vat {
+span.date-and-vat {
     font-size: 13px;
 }
 
@@ -325,12 +321,18 @@ span.vat {
     margin-top: 30px;
 }
 
-.date-added i {
-    color: coral;
+img.mobilebg-logo {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+span.date-span {
+    font-weight: 700;
+    font-size: large;
 }
 
 .modal-content {
-    max-width: 1000px; 
+    max-width: 1000px;
     width: 1000px;
     height: auto;
 }
@@ -342,7 +344,55 @@ span.vat {
     width: 1000px;
 }
 
-.modal-body img {
-    width: 100%; 
-    height: auto;
+    .modal-body img {
+        width: 100%;
+        height: auto;
+    }
+
+.mobilebg-logo {
+    width: 300px;
 }
+
+
+i.fa-solid {
+    font-size: 20px;
+    color: #007acc
+}
+
+
+span.date-h-price {
+    font-size: 14px;
+}
+
+span.h-price {
+    font-weight: 800;
+    font-size: 19px;
+}
+
+.specifications {
+    margin-top: 20px;
+    border: 2px solid #3d3d3d;
+}
+
+.spec-data {
+    margin: 15px;
+}
+
+    .spec-data .spec-title {
+        display: inline-block;
+        font-weight: 700;
+        text-transform: none;
+        font-size: 19px;
+        margin-bottom: 15px;
+    }
+
+    .spec-data .specs .spec:nth-of-type(2n+1) {
+        background-color: #293946;
+    }
+
+    .spec-data .specs .spec {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 0 20px;
+        padding: 3px 10px;
+    }

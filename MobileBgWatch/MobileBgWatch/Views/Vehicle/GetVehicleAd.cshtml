@@ -1,6 +1,6 @@
 ﻿@model MobileBgWatch.ViewModels.VehicleViewModel
 
-<div class="d-flex flex-wrap">
+<div class="d-flex flex-wrap justify-content-center">
     <div class="col-md-6" id="left">
         <div class="carousel-container">
             <div class="carousel slide" id="carousel-main" data-bs-wrap="true">
@@ -60,21 +60,62 @@
                 }
             }
             <div class="price_container_vehicle">
-                <p class="item_current">
+                <div class="item_current">
                     <i class="fa-solid fa-money-bill-wave @currentPriceClass"></i> Current price:
                     <span class="item_current_price @currentPriceClass">@Model.CurrentPrice.Price.ToString("N0")</span>
                     <span class="item_current_currency @currentPriceClass">@Model.CurrentPrice.Currency</span>
-                    <span class="vat">@(Model.CurrentPrice.IncludeVat ? "(Цената е с включено ДДС)" : "(Не се начислява ДДС)")</span>
-                </p>
-                <p class="item_previous">
+                    <span class="date-and-vat">
+                        <span class="item_date">(@Model.CurrentPrice.Date.ToString("dd/MM/yyyy")</span>
+                        <span class="vat">@(Model.CurrentPrice.IncludeVat ? "- Цената е с включено ДДС)" : "- Не се начислява ДДС)")</span>
+                    </span>
+
+                </div>
+                <div class="item_previous">
                     <i class="fa-solid fa-money-bill-wave @previousPriceClass"></i> Previous price:
                     <span class="item_previous_price @previousPriceClass">@Model.PreviousPrice.Price.ToString("N0")</span>
                     <span class="item_previous_currency @previousPriceClass">@Model.PreviousPrice.Currency</span>
-                    <span class="vat">@(Model.PreviousPrice.Price == 0 ? "" : (Model.PreviousPrice.IncludeVat ? "(Цената е с включено ДДС)" : "(Не се начислява ДДС)"))</span>
-                </p>
+                    <span class="date-and-vat">
+                        <span class="item_date">(@Model.PreviousPrice.Date.ToString("dd/MM/yyyy")</span>
+                        <span class="vat">@(Model.PreviousPrice.IncludeVat ? "- Цената е с включено ДДС)" : "- Не се начислява ДДС)")</span>
+                    </span>
+
+                </div>
             </div>
             <div class="date-added">
-                <i class="fa-solid fa-calendar-days"></i><span> Дата на добавяне в тракера: @Model.DateAdded.ToString("dd-MM-yyyy")</span>
+                <i class="fa-solid fa-calendar-days"></i><span> Дата на добавяне в тракера: <span class="date-span">@Model.DateAdded.ToString("dd-MM-yyyy")</span></span>
+            </div>
+            <a class="text-decoration-none" href="@Model.Url" target="_blank">
+                <i class="fa-solid fa-link"></i> <img class="mobilebg-logo" src="~/images/mobilebglogo.png" alt="@Model.Url" title="Отвори обявата" />
+            </a>
+            <div class="historic-prices">
+                <i class="fa-solid fa-money-check"></i> <span class="span-historic-price">@(Model.HistoricalPrices.Count == 0 ? "Няма предишни цени в тракера." : "Предишни цени:")</span>
+                @if (Model.HistoricalPrices.Count > 0)
+                {
+                    foreach (var price in Model.HistoricalPrices)
+                    {
+                        <li class="historic-price">
+                            <span class="date-h-price">@price.Date.ToString("dd/MM/yyyy")</span> ➞ <span class="h-price"> @price.Price.ToString("N0") @price.Currency</span>
+                            <span class="vat">
+                                @(
+                                    price.IncludeVat ? "(Цената е с включено ДДС)" : "(Не се начислява ДДС)")
+                            </span>
+                        </li>
+                    }
+                }
+            </div>
+            <div class="specifications">
+                <div class="spec-data">
+                    <span class="spec-title">Технически спецификации</span><br>
+                    <div class="specs">
+                        @foreach (var spec in Model.Specifications)
+                        {
+                            <div class="spec">
+                                <div>@spec.Key</div>
+                                <div>@spec.Value</div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -95,20 +136,16 @@
         const indicators = document.querySelector('.carousel-indicators');
         const placeholder = document.querySelector('.carousel-indicators-placeholder');
 
-        // Function to update the placeholder size
         function updatePlaceholderSize() {
             const indicatorsRect = indicators.getBoundingClientRect();
             placeholder.style.width = `${indicatorsRect.width}px`;
             placeholder.style.height = `${indicatorsRect.height}px`;
         }
 
-        // Create a ResizeObserver to watch for changes in the size of the indicators
         const resizeObserver = new ResizeObserver(updatePlaceholderSize);
 
-        // Observe the indicators element
         resizeObserver.observe(indicators);
 
-        // Initial size update
         updatePlaceholderSize();
     });
     function showImageModal(src) {
