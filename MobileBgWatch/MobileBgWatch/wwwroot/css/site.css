@@ -83,6 +83,7 @@ main {
 }
 
 li.new_item {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -96,6 +97,17 @@ li.new_item {
     overflow: hidden;
 }
 
+img.new-flag {
+    position: absolute;
+    z-index: 2;
+    top: -7px;
+    left: -13px;
+    width: 80px;
+    height: auto;
+    background: 0 0;
+}
+
+
 a.no_underline {
     display: flex;
     flex-direction: column;
@@ -104,6 +116,7 @@ a.no_underline {
 }
 
 .item_pic {
+    position: relative;
     flex: 1;
     display: flex;
     justify-content: center;
@@ -219,9 +232,9 @@ footer {
 }
 
 .carousel-container {
+    position: relative;
     max-width: 800px;
     height: 650px;
-    /* border: 2px solid #3d3d3d;*/
 }
 
 div#carousel-main.carousel.slide {
@@ -250,7 +263,6 @@ img.carousel-image {
     max-width: 1000px;
     display: block;
     margin: 0px;
-    /*border: 2px solid #3d3d3d;*/
     margin-top: 10px;
     position: unset;
 }
@@ -305,7 +317,7 @@ div.location {
 }
 
 .price_container_vehicle {
-    margin-top: 30px;
+    margin-top: 20px;
     font-size: 25px;
 }
 
@@ -318,7 +330,7 @@ span.date-and-vat {
 }
 
 .date-added {
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 img.mobilebg-logo {
@@ -331,17 +343,24 @@ span.date-span {
     font-size: large;
 }
 
+.modal-dialog {
+    max-width: 1500px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .modal-content {
-    max-width: 1000px;
-    width: 1000px;
+    max-width: auto;
+    width: auto;
     height: auto;
+    justify-content: left;
 }
 
 .modal-body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1000px;
+    width: auto;
 }
 
     .modal-body img {
@@ -396,3 +415,4 @@ span.h-price {
         grid-gap: 0 20px;
         padding: 3px 10px;
     }
+

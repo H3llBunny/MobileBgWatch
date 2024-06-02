@@ -10,6 +10,8 @@ namespace MobileBgWatch.ViewModels
 
         public string Name { get; set; }
 
+        public DateTime DateAdded { get; set; }
+
         public long VehicleAdId { get; set; }
 
         public VehiclePrice CurrentPrice { get; set; }

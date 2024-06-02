@@ -1,10 +1,13 @@
 ﻿@model MobileBgWatch.ViewModels.VehicleViewModel
-
+@{
+    bool isVehicleNew = (Model.DateAdded.Date >= DateTime.UtcNow.Date.AddDays(-1));
+}
 <div class="d-flex flex-wrap justify-content-center">
     <div class="col-md-6" id="left">
         <div class="carousel-container">
             <div class="carousel slide" id="carousel-main" data-bs-wrap="true">
                 <div class="border-top carousel-inner">
+                    @Html.Raw(isVehicleNew ? "<img src=\"/images/new.png\" class=\"new-flag\" />" : "")
                     <div class="carousel-item active">
                         <img class="carousel-image" src="@Model.ImageUrls.FirstOrDefault()" onclick="showImageModal(this.src)" />
                     </div>

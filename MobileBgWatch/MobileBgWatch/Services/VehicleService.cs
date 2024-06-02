@@ -78,6 +78,7 @@ namespace MobileBgWatch.Services
                         Id = v.Id,
                         ImageUrl = v.ImageUrls.FirstOrDefault(),
                         Name = v.Name,
+                        DateAdded = v.DateAdded,
                         VehicleAdId = v.VehicleAdId,
                         CurrentPrice = v.CurrentPrice,
                         PreviousPrice = v.PreviousPrice
@@ -145,6 +146,7 @@ namespace MobileBgWatch.Services
                 Id = v.Id,
                 ImageUrl = v.ImageUrls.FirstOrDefault(),
                 Name = v.Name,
+                DateAdded = v.DateAdded,
                 VehicleAdId = v.VehicleAdId,
                 CurrentPrice = v.CurrentPrice,
                 PreviousPrice = v.PreviousPrice

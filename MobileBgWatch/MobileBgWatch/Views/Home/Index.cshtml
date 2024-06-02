@@ -55,6 +55,8 @@
                         {
                             string currentPriceClass;
                             string previousPriceClass;
+                            bool isVehicleNew = (vehicle.DateAdded.Date >= DateTime.UtcNow.Date.AddDays(-1));
+
                             if (vehicle.PreviousPrice.Price != 0)
                             {
                                 currentPriceClass = vehicle.CurrentPrice.Price < vehicle.PreviousPrice?.Price ? "text-success" : "text-danger";
@@ -66,8 +68,10 @@
                                 previousPriceClass = "text-danger";
                             }
 
+                            string vehicleName = vehicle.Name.Length > 60 ? vehicle.Name.Substring(0, 60) + "..." : vehicle.Name;
 
                             <li class="new_item">
+                                @Html.Raw(isVehicleNew ? "<img src=\"/images/new.png\" class=\"new-flag\" />" : "")
                                 <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
                                     <div class="item_pic">
                                         <img class="index-image" src="@vehicle.ImageUrl"
@@ -75,7 +79,7 @@
                                     </div>
                                     <div class="name_and_price">
                                         <div class="item_text">
-                                            @vehicle.Name
+                                            @vehicleName
                                         </div>
                                         <div class="border-top price_container">
                                             <p class="item_current">
