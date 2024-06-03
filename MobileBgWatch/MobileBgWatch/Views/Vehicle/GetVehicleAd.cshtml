@@ -128,13 +128,25 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-body">
-                <img src="" id="modalImage" class="img-fluid" />
+                <button type="button" class="carousel-control-prev modal-prev">&lt;</button>
+                <img src="" id="modalImage" class="img-fluid mx-auto" />
+                <button type="button" class="carousel-control-next modal-next">&gt;</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    let currentImageIndex = 0;
+    const imageUrls = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ImageUrls));
+
+    function showImageModal(src) {
+        currentImageIndex = imageUrls.indexOf(src);
+        document.getElementById('modalImage').src = src;
+        var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+        imageModal.show();
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const indicators = document.querySelector('.carousel-indicators');
         const placeholder = document.querySelector('.carousel-indicators-placeholder');
@@ -150,10 +162,15 @@
         resizeObserver.observe(indicators);
 
         updatePlaceholderSize();
+
+        document.querySelector('.modal-prev').addEventListener('click', function () {
+            currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+            document.getElementById('modalImage').src = imageUrls[currentImageIndex];
+        });
+
+        document.querySelector('.modal-next').addEventListener('click', function () {
+            currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+            document.getElementById('modalImage').src = imageUrls[currentImageIndex];
+        });
     });
-    function showImageModal(src) {
-        document.getElementById('modalImage').src = src;
-        var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
-        imageModal.show();
-    }
 </script>

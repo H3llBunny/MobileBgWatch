@@ -219,10 +219,8 @@ footer {
 }
 
 [data-bs-theme=dark] .carousel .carousel-control-next-icon,
-[data-bs-theme=dark] .carousel .carousel-control-prev-icon,
-[data-bs-theme=dark].carousel .carousel-control-next-icon,
-[data-bs-theme=dark].carousel .carousel-control-prev-icon {
-    filter: invert(0);
+[data-bs-theme=dark] .carousel .carousel-control-prev-icon {
+    filter: none;
     width: 50%;
     height: 50%;
 }
@@ -416,3 +414,7 @@ span.h-price {
         padding: 3px 10px;
     }
 
+button.modal-prev, button.modal-next {
+    font-size: 70px;
+    opacity: .8;
+}
