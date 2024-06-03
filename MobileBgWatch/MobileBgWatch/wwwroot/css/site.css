@@ -300,9 +300,15 @@ div#left {
     min-width: 100px;
 }
 
-div.info-container {
+.custom-margin {
     margin-left: 40px;
     max-width: 600px;
+}
+
+@media (max-width: 767.98px) {
+    .custom-margin {
+        margin-left: 0;
+    }
 }
 
 div.adName {
