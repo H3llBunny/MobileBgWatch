@@ -86,12 +86,12 @@ li.new_item {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    /*justify-content: space-around;*/
     width: 300px;
     height: 350px;
     margin: 4px;
     border: 2px solid #3d3d3d;
-    padding: 5px;
+    /*padding: 5px;*/
     box-sizing: border-box;
     background: #212121;
     overflow: hidden;
@@ -113,6 +113,7 @@ a.no_underline {
     flex-direction: column;
     justify-content: space-between;
     text-decoration: none;
+    padding: 5px;
 }
 
 .item_pic {
@@ -136,19 +137,21 @@ a.no_underline {
     color: #b7b7b7;
 }
 
-.name_and_price {
-    margin-top: auto;
-}
-
 .price_container {
+    border-top: 2px solid #3d3d3d;
     display: flex;
     flex-direction: column;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 0;
 }
 
 .item_current {
-    margin-bottom: 0px;
     color: #b7b7b7;
-    margin-top: 5px;
+    margin-bottom: 0px;
+    margin-left: 5px;
+   
 }
 
 .item_current_price {
@@ -160,8 +163,9 @@ a.no_underline {
 }
 
 .item_previous {
-    margin-bottom: 0px;
     color: #b7b7b7;
+    margin-bottom: 0px;
+    margin-left: 5px;
 }
 
 .item_previous_price {
@@ -305,7 +309,7 @@ div#left {
     max-width: 600px;
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 767px) {
     .custom-margin {
         margin-left: 0;
     }

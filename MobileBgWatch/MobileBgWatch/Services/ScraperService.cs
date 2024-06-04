@@ -139,7 +139,7 @@ namespace MobileBgWatch.Services
                         Name = name,
                         DateAdded = DateTime.UtcNow,
                         CurrentPrice = currentPrice,
-                        PreviousPrice = new VehiclePrice { Price = 0, Currency = currentPrice.Currency, Date = DateTime.Today, IncludeVat = currentPrice.IncludeVat },
+                        PreviousPrice = new VehiclePrice { Price = 0, Currency = currentPrice.Currency, Date = DateTime.UtcNow, IncludeVat = currentPrice.IncludeVat },
                         Url = url,
                         Location = location,
                         Specifications = specifications,
