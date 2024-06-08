@@ -1,4 +1,6 @@
-﻿@model MobileBgWatch.ViewModels.VehicleViewModel
+﻿@using System.Globalization
+@model MobileBgWatch.ViewModels.VehicleViewModel
+
 @{
     bool isVehicleNew = (Model.DateAdded.Date >= DateTime.UtcNow.Date.AddHours(-12));
 }
@@ -65,7 +67,7 @@
             <div class="price_container_vehicle">
                 <div class="item_current">
                     <i class="fa-solid fa-money-bill-wave @currentPriceClass"></i> Current price:
-                    <span class="item_current_price @currentPriceClass">@Model.CurrentPrice.Price.ToString("N0")</span>
+                    <span class="item_current_price @currentPriceClass">@Model.CurrentPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
                     <span class="item_current_currency @currentPriceClass">@Model.CurrentPrice.Currency</span>
                     <span class="date-and-vat">
                         <span class="item_date">(@Model.CurrentPrice.Date.ToString("dd/MM/yyyy")</span>
@@ -75,7 +77,7 @@
                 </div>
                 <div class="item_previous">
                     <i class="fa-solid fa-money-bill-wave @previousPriceClass"></i> Previous price:
-                    <span class="item_previous_price @previousPriceClass">@Model.PreviousPrice.Price.ToString("N0")</span>
+                    <span class="item_previous_price @previousPriceClass">@Model.PreviousPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
                     <span class="item_previous_currency @previousPriceClass">@Model.PreviousPrice.Currency</span>
                     <span class="date-and-vat">
                         <span class="item_date">(@Model.PreviousPrice.Date.ToString("dd/MM/yyyy")</span>
@@ -97,7 +99,7 @@
                     foreach (var price in Model.HistoricalPrices)
                     {
                         <li class="historic-price">
-                            <span class="date-h-price">@price.Date.ToString("dd/MM/yyyy")</span> ➞ <span class="h-price"> @price.Price.ToString("N0") @price.Currency</span>
+                            <span class="date-h-price">@price.Date.ToString("dd/MM/yyyy")</span> ➞ <span class="h-price"> @price.Price.ToString("N0", CultureInfo.InvariantCulture) @price.Currency</span>
                             <span class="vat">
                                 @(
                                     price.IncludeVat ? "(Цената е с включено ДДС)" : "(Не се начислява ДДС)")
@@ -120,6 +122,7 @@
                     </div>
                 </div>
             </div>
+            <div id="vehiclePriceChart" style="width: 100%; height: 400px;"></div>
         </div>
     </div>
 </div>
@@ -171,6 +174,88 @@
         document.querySelector('.modal-next').addEventListener('click', function () {
             currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
             document.getElementById('modalImage').src = imageUrls[currentImageIndex];
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const historicalPrices = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.HistoricalPrices));
+        const currentPrice = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CurrentPrice));
+
+        const prices = historicalPrices.concat([currentPrice]).sort((a, b) => new Date(a.Date) - new Date(b.Date));
+
+        const priceData = prices.map(price => [new Date(price.Date).getTime(), price.Price]);
+
+        Highcharts.chart('vehiclePriceChart', {
+            chart: {
+                type: 'line',
+                backgroundColor: '#333333',
+                style: {
+                    fontFamily: 'Arial, sans-serif'
+                }
+            },
+            title: {
+                text: 'Vehicle Price Over Time',
+                style: {
+                    color: '#E0E0E0'
+                }
+            },
+            xAxis: {
+                type: 'datetime',
+                title: {
+                    text: '<span style="font-weight:bold; font-size: 16px">Date</span>',
+                    style: {
+                        color: '#E0E0E0'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#E0E0E0'
+                    },
+                    formatter: function () {
+                        return Highcharts.dateFormat('%e %b %Y', this.value);
+                    }
+                },
+                lineColor: '#707070',
+                tickColor: '#707070'
+            },
+            yAxis: {
+                title: {
+                    text: '<span style="font-weight:bold; font-size: 16px">Price</span>',
+                    style: {
+                        color: '#E0E0E0'
+                    }
+                },
+                labels: {
+                    style: {
+                        color: '#E0E0E0'
+                    },
+                    formatter: function () {
+                        return this.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ' + prices[0].Currency;
+                    }
+                },
+                gridLineColor: '#707070'
+            },
+            legend: {
+                itemStyle: {
+                    color: '#E0E0E0'
+                },
+                itemHoverStyle: {
+                    color: '#FFFFFF'
+                }
+            },
+            series: [{
+                name: 'Price',
+                data: priceData,
+                color: '#00adef'
+            }],
+            tooltip: {
+                formatter: function () {
+                    return `<br>${Highcharts.dateFormat('%e %b %Y', this.x)}<br>Price: ${this.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ${prices[0].Currency}`;
+                }
+            },
+            credits: {
+                enabled: false
+            }
         });
     });
 </script>

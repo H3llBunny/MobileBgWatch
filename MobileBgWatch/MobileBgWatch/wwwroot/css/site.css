@@ -428,3 +428,7 @@ button.modal-prev, button.modal-next {
     font-size: 70px;
     opacity: .8;
 }
+
+#vehiclePriceChart {
+    margin-top: 20px;
+}

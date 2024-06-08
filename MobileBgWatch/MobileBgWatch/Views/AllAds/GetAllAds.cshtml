@@ -1,4 +1,5 @@
-﻿@model MobileBgWatch.ViewModels.VehiclesListViewModel;
+﻿@using System.Globalization
+@model MobileBgWatch.ViewModels.VehiclesListViewModel;
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -69,12 +70,12 @@
                             <div class="price_container">
                                 <p class="item_current">
                                     Current price:
-                                    <span class="item_current_price @currentPriceClass">@vehicle.CurrentPrice.Price.ToString("N0")</span>
+                                    <span class="item_current_price @currentPriceClass">@vehicle.CurrentPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
                                     <span class="item_current_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
                                 </p>
                                 <p class="item_previous">
                                     Previous price:
-                                    <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0")</span>
+                                    <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
                                     <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
                                 </p>
                             </div>
