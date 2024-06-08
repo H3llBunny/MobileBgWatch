@@ -40,7 +40,7 @@
             {
                 string currentPriceClass;
                 string previousPriceClass;
-                bool isVehicleNew = (vehicle.DateAdded.Date >= DateTime.UtcNow.Date.AddDays(-1));
+                bool isVehicleNew = (vehicle.DateAdded.Date >= DateTime.UtcNow.Date.AddHours(-12));
 
                 if (vehicle.PreviousPrice.Price != 0)
                 {
