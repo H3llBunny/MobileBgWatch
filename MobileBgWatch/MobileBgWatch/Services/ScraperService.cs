@@ -86,12 +86,14 @@ namespace MobileBgWatch.Services
                     {
                         continue;
                     }
+
                     string name = nameElement.FirstChild.Text().Trim();
                     var secondPartOfName = document.QuerySelector("div.obTitle span");
                     if (secondPartOfName != null)
                     {
                         name += $" - {secondPartOfName.TextContent.Trim()}";
                     }
+
                     long vehicleAdId = long.Parse(document.QuerySelector("div.obiava").TextContent.Trim().Where(char.IsDigit).ToArray());
                     string location = document.QuerySelector("div.carLocation span").Text();
                     bool vatIncluded = false;
@@ -100,8 +102,27 @@ namespace MobileBgWatch.Services
                     {
                         vatIncluded = vatCheck.Text() == "Цената е с включено ДДС" ? true : false;
                     }
-                    int price = int.Parse(document.QuerySelector("div.Price").FirstChild.TextContent.Trim().Where(char.IsDigit).ToArray());
-                    string currency = document.QuerySelector("div.Price").FirstChild.TextContent.Trim().Split().Last();
+
+                    int price = 0;
+                    string currency = "N/A";
+                    var priceElement = document.QuerySelector("div.Price");
+                    if (priceElement != null)
+                    {
+                        var priceText = priceElement.FirstChild?.TextContent.Trim();
+                        if (!string.IsNullOrWhiteSpace(priceText))
+                        {
+                            var priceDigits = new string(priceText.Where(char.IsDigit).ToArray());
+                            if (!string.IsNullOrWhiteSpace(priceDigits))
+                            {
+                                price = int.Parse(priceDigits);
+                                var currencyParts = priceText.Split(' ');
+                                if (currencyParts.Length > 1)
+                                {
+                                    currency = currencyParts.Last().Trim();
+                                }
+                            }
+                        }
+                    }
                     var currentPrice = new VehiclePrice
                     {
                         Price = price,
@@ -109,6 +130,7 @@ namespace MobileBgWatch.Services
                         Date = DateTime.UtcNow,
                         IncludeVat = vatIncluded
                     };
+
                     var specifications = new Dictionary<string, string>();
                     var itemElements = document.QuerySelectorAll("div.techData div.item");
                     foreach (var itemElement in itemElements)
@@ -117,6 +139,7 @@ namespace MobileBgWatch.Services
                         string value = itemElement.Children[1].Text();
                         specifications.Add(key, value);
                     }
+
                     var imgUrlElements = document.QuerySelectorAll("img.carouselimg");
                     var imgUrls = new List<string>();
                     if (imgUrlElements.Length > 0)
