@@ -306,7 +306,7 @@ div#left {
 
 .custom-margin {
     margin-left: 40px;
-    max-width: 600px;
+    max-width: 750px;
 }
 
 @media (max-width: 767px) {

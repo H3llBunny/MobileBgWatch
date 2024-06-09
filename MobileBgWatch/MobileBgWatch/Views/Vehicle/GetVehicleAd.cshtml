@@ -183,7 +183,17 @@
 
         const prices = historicalPrices.concat([currentPrice]).sort((a, b) => new Date(a.Date) - new Date(b.Date));
 
-        const priceData = prices.map(price => [new Date(price.Date).getTime(), price.Price]);
+        Highcharts.setOptions({
+            time: {
+                useUTC: true
+            }
+        });
+
+        const priceData = prices.map(price => {
+            let date = new Date(price.Date);
+            date.setUTCHours(0, 0, 0, 0);
+            return [date.getTime(), price.Price];
+        });
 
         Highcharts.chart('vehiclePriceChart', {
             chart: {
@@ -203,6 +213,7 @@
                 type: 'datetime',
                 title: {
                     text: '<span style="font-weight:bold; font-size: 16px">Date</span>',
+                    margin: 10,
                     style: {
                         color: '#E0E0E0'
                     }
@@ -212,7 +223,9 @@
                         color: '#E0E0E0'
                     },
                     formatter: function () {
-                        return Highcharts.dateFormat('%e %b %Y', this.value);
+                        const utcDate = new Date(this.value);
+                        utcDate.setUTCHours(0, 0, 0, 0);
+                        return Highcharts.dateFormat('%e %b %Y', utcDate);
                     }
                 },
                 lineColor: '#707070',
@@ -250,7 +263,7 @@
             }],
             tooltip: {
                 formatter: function () {
-                    return `<br>${Highcharts.dateFormat('%e %b %Y', this.x)}<br>Price: ${this.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ${prices[0].Currency}`;
+                    return `<br>${Highcharts.dateFormat('%e %b %Y', this.x)}<br><span style="color: #00adef">Price: </span>${this.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ${prices[0].Currency}`;
                 }
             },
             credits: {
