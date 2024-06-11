@@ -9,7 +9,7 @@ namespace MobileBgWatch.Services
 
         Task<SearchUrlsListViewModel> GetSearchUrlsListAsync(string userId, int? count = null);
 
-        Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int page, int vehiclesPerPage);
+        Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int pageNumber, int vehiclesPerPage, string sortOrder);
 
         bool DoesVehicleAdExist(Vehicle vehicle);
 

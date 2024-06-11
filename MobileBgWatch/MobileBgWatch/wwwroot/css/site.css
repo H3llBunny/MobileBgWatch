@@ -432,3 +432,12 @@ button.modal-prev, button.modal-next {
 #vehiclePriceChart {
     margin-top: 20px;
 }
+
+.flex-container {
+    display: flex;
+    align-items: baseline;
+}
+
+    .flex-container .sort-options {
+        margin-right: 4px;
+    }

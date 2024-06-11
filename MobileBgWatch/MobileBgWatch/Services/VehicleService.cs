@@ -138,7 +138,7 @@ namespace MobileBgWatch.Services
             return totalVehicles.Count();
         }
 
-        public async Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int page, int vehiclesPerPage)
+        public async Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int pageNumber, int vehiclesPerPage, string sortOder)
         {
             var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl);
             var projection = Builders<Vehicle>.Projection.Expression(v => new VehicleInListViewModel
@@ -152,10 +152,23 @@ namespace MobileBgWatch.Services
                 PreviousPrice = v.PreviousPrice
             });
 
-            var vehicles = await this._vehiclesCollection
-                .Find(filter)
-                .SortByDescending(v => v.Id)
-                .Skip((page - 1) * vehiclesPerPage)
+            var query = this._vehiclesCollection.Find(filter);
+              
+            switch (sortOder)
+            {
+                case "price_asc":
+                    query = query.SortBy(v => v.CurrentPrice.Price);
+                    break;
+                case "price_desc":
+                    query = query.SortByDescending(v => v.CurrentPrice.Price);
+                    break;
+                default:
+                    query = query.SortByDescending(v => v.Id);
+                    break;
+            }
+
+            var vehicles = await query
+                .Skip((pageNumber - 1) * vehiclesPerPage)
                 .Limit(vehiclesPerPage)
                 .Project(projection)
                 .ToListAsync();

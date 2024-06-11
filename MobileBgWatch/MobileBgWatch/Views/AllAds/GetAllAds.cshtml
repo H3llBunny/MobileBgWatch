@@ -27,8 +27,21 @@
     }
 
     <h5 id="searchUrlh5">
-        <b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">All @Model.VehiclesCount</b> vehicle ads for search link:
-        <b style="font-size: 12px;">@Model.SearchUrl</b>
+        <div class="flex-container">
+            <div class="sort-options">
+                <form id="sortForm" method="get" asp-action="GetAllAds">
+                    <input type="hidden" name="searchUrl" value="@Model.SearchUrl" />
+                    <input type="hidden" name="pageNumber" value="1" />
+                    <select name="sortOrder" onchange="document.getElementById('sortForm').submit()">
+                        <option value="newest" selected="@(Model.SortOrder == "newest")">Newest</option>
+                        <option value="price_asc" selected="@(Model.SortOrder == "price_asc")">Price: Ascending</option>
+                        <option value="price_desc" selected="@(Model.SortOrder == "price_desc")">Price: Descending</option>
+                    </select>
+                </form>
+            </div>
+            <b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold; margin-right: 4px;">All @Model.VehiclesCount</b> vehicle ads for search link:
+            <b style="font-size: 12px; margin-left: 4px;">@Model.SearchUrl</b>
+        </div>
     </h5>
     @if (ViewBag.Message != null)
     {

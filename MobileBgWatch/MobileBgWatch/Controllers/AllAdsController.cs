@@ -14,17 +14,16 @@ namespace MobileBgWatch.Controllers
             this._vehicleService = vehicleService;
         }
 
-        [HttpPost]
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAllAds(string searchUrl, int id = 1)
+        public async Task<IActionResult> GetAllAds(string searchUrl, int pageNumber = 1, string sortOrder = "newest")
         {
             if (!User.Identity.IsAuthenticated)
             {
                 return Redirect("User/Login");
             }
 
-            if (id <= 0)
+            if (pageNumber <= 0)
             {
                 return this.NotFound();
             }
@@ -34,10 +33,11 @@ namespace MobileBgWatch.Controllers
             var viewModel = new VehiclesListViewModel
             {
                 VehiclesPerPage = VehiclesPerPage,
-                PageNumber = id,
+                PageNumber = pageNumber,
                 SearchUrl = searchUrl,
                 VehiclesCount = await this._vehicleService.GetTotalAdsCountAsync(searchUrl),
-                Vehicles = await this._vehicleService.GetAllAsync(searchUrl, id, VehiclesPerPage)
+                Vehicles = await this._vehicleService.GetAllAsync(searchUrl, pageNumber, VehiclesPerPage, sortOrder),
+                SortOrder = sortOrder
             };
 
             return this.View(viewModel);
