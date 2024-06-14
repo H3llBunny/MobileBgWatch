@@ -51,9 +51,11 @@
                 }
                 else
                 {
+
                     <ul class="ul_container">
                         @foreach (var vehicle in url.Vehicles)
                         {
+
                             string currentPriceClass;
                             string previousPriceClass;
                             bool isVehicleNew = (vehicle.DateAdded.Date >= DateTime.UtcNow.Date.AddHours(-12));
