@@ -1,6 +1,8 @@
 ﻿@using System.Globalization
 @model MobileBgWatch.ViewModels.VehicleViewModel
-
+@{
+    ViewData["Title"] = "Vehicle";
+}
 @{
     bool isVehicleNew = (Model.DateAdded.Date >= DateTime.UtcNow.Date.AddHours(-12));
 }
