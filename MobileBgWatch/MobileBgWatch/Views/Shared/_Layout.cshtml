@@ -15,7 +15,7 @@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
                 <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MobileBgWatch</a>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">MobileBgWatch</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -23,7 +23,10 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav">
@@ -31,17 +34,17 @@
                                 if (User?.Identity?.IsAuthenticated ?? false)
                                 {
                                     <li class="nav-item">
-                                        <span>Welcome: @User.Identity.Name</span>
+                                        <a style="text-decoration: none; color: gray;" asp-controller="User" asp-action="ChangePassword">Welcome: @User.Identity.Name</a>
                                         <a asp-controller="User" asp-action="Logout" class="btn btn-secondary">Logout</a>
                                     </li>
                                 }
                                 else
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link " asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                                        <a class="nav-link" asp-controller="User" asp-action="Login">Login</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link " asp-area="" asp-controller="User" asp-action="Register">Register</a>
+                                        <a class="nav-link" asp-controller="User" asp-action="Register">Register</a>
                                     </li>
                                 }
                             }
@@ -59,7 +62,7 @@
 
         <footer class="border-top text-muted text-center py-2">
             <div id="footerId" class="container">
-                &copy; 2024 - MobileBgWatch - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                &copy; 2024 - MobileBgWatch - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </footer>
     </div>

@@ -151,7 +151,6 @@ a.no_underline {
     color: #b7b7b7;
     margin-bottom: 0px;
     margin-left: 5px;
-   
 }
 
 .item_current_price {
@@ -441,3 +440,34 @@ button.modal-prev, button.modal-next {
     .flex-container .sort-options {
         margin-right: 4px;
     }
+
+#manage-options {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#manage-user {
+    flex: 0 0 250px;
+    font-weight: 600;
+    font-size: 25px;
+    margin-left: 30px;
+}
+
+#content {
+    flex: 1;
+    padding-left: 30px;
+    max-width: 500px;
+}
+
+#manage-user > div {
+    border: solid 1px;
+    margin-bottom: 20px;
+    width: 220px;
+    padding: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+div #login-error ul li{
+    list-style-type: none;
+}

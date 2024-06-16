@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MobileBgWatch.Models;
 using MongoDB.Driver;
 
@@ -29,7 +30,6 @@ namespace MobileBgWatch.Services
         public async Task AddSearchUrlToUserAsync(string userId, string searchUrl)
         {
             var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
-            var user = await this._userCollection.Find(filter).FirstOrDefaultAsync();
             var update = Builders<ApplicationUser>.Update
                 .Push(u => u.SearchUrls, searchUrl);
 
@@ -44,7 +44,6 @@ namespace MobileBgWatch.Services
         public async Task DeleteSearchUrlAsync(string userId, string searchUrl)
         {
             var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
-            var user = await this._userManager.FindByIdAsync(userId);
             var update = Builders<ApplicationUser>.Update
                 .Pull(u => u.SearchUrls, searchUrl);
 
@@ -54,6 +53,38 @@ namespace MobileBgWatch.Services
             };
 
             await this._userCollection.FindOneAndUpdateAsync(filter, update, options);
+        }
+        public async Task<bool> NewPasswordCheckAsync(string userId, string newPassword)
+        {
+            var user = await this._userManager.FindByIdAsync(userId);
+            var isNewPasswordTheSame = await this._userManager.CheckPasswordAsync(user, newPassword);
+            if (!isNewPasswordTheSame)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public async Task UpdatePasswordAsync(string userId, string newPassword)
+        {
+            var user = await this._userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                var newPasswordHash = this._userManager.PasswordHasher.HashPassword(user, newPassword);
+
+                var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
+                var update = Builders<ApplicationUser>.Update.Set(u => u.PasswordHash, newPasswordHash);
+
+                var options = new FindOneAndUpdateOptions<ApplicationUser>
+                {
+                    ReturnDocument = ReturnDocument.After
+                };
+
+                await this._userCollection.FindOneAndUpdateAsync(filter, update, options);
+            }
         }
     }
 }

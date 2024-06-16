@@ -4,7 +4,6 @@ using MobileBgWatch.Models;
 using MobileBgWatch.Services;
 using MobileBgWatch.ViewModels;
 using System.Diagnostics;
-using System.Net;
 using System.Security.Claims;
 
 namespace MobileBgWatch.Controllers

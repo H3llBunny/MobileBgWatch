@@ -1,4 +1,7 @@
 using AngleSharp;
+using AspNetCore.Identity.MongoDbCore.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using MobileBgWatch.Models;
 using MobileBgWatch.Profiles;
 using MobileBgWatch.Services;
@@ -20,7 +23,7 @@ namespace MobileBgWatch
 
             var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDbConfig)).Get<MongoDbConfig>();
 
-            var identityBuilder = builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -29,7 +32,8 @@ namespace MobileBgWatch
                 options.Password.RequiredLength = 8;
                 options.User.RequireUniqueEmail = true;
             })
-                .AddMongoDbStores<ApplicationUser, ApplicationRole, string>(mongoDbSettings.ConnectionString, mongoDbSettings.Database);
+                .AddMongoDbStores<ApplicationUser, ApplicationRole, string>(mongoDbSettings.ConnectionString, mongoDbSettings.Database)
+                .AddDefaultTokenProviders();
 
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {

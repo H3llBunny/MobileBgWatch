@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Personal Data";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Manage your account</h1>
+
+<div>
+    <h2>Change your account settings</h2>
+    <hr />
+    <div id="manage-options">
+        <div class="col-md-3" id="manage-user">
+            <div>
+                <a asp-controller="User" asp-action="ChangePassword" style="text-decoration: none; color: white;">Change Password</a>
+            </div>
+            <div style="cursor: auto;">
+                <span style="text-decoration: none; color: gray; cursor: default;">Personal Data</span>
+            </div>
+        </div>
+        <div class="col-md-9" id="content">
+            @if (ViewBag.Message != null)
+            {
+                <div class="p-1 mb-2 bg-success text-white">@ViewBag.Message</div>
+            }
+            <h3>@ViewData["Title"]</h3>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
+                    <p>
+                        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+                    </p>
+                    <p>
+                        <a id="delete" asp-controller="User" asp-action="DeleteAccount" class="btn btn-danger">Delete Account</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
