@@ -56,18 +56,18 @@ namespace MobileBgWatch.Services
             var userFilter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
             var user = await this._userCollection.Find(userFilter).FirstOrDefaultAsync();
 
-            if (user.SearchUrls == null || user.SearchUrls?.Count == 0)
+            if (user?.SearchUrls == null || user.SearchUrls?.Count == 0)
             {
                 return null;
             }
 
             var searchUrlList = new SearchUrlsListViewModel();
 
-            foreach (var url in user.SearchUrls)
+            foreach (var url in user.SearchUrls.Select(s => s.Url))
             {
-                var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, url);
+                var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, url) & Builders<Vehicle>.Filter.Eq(v => v.UserId, userId);
                 var vehiclesQuery = this._vehiclesCollection.Find(filter).SortByDescending(v => v.Id);
-                int totalAdsCount = await GetTotalAdsCountAsync(url);
+                int totalAdsCount = await GetTotalAdsCountAsync(userId, url);
                 var vehicles = await (count.HasValue ? vehiclesQuery.Limit(count.Value) : vehiclesQuery).ToListAsync();
                 var searchUrlModel = new SearchUrlViewModel
                 {
@@ -130,17 +130,17 @@ namespace MobileBgWatch.Services
             await this._vehiclesCollection.FindOneAndUpdateAsync(filter, update, options);
         }
 
-        public async Task<int> GetTotalAdsCountAsync(string searchUrl)
+        public async Task<int> GetTotalAdsCountAsync(string userId, string searchUrl)
         {
-            var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl);
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl) & Builders<Vehicle>.Filter.Eq(v => v.UserId, userId);
             var vehiclesQuery = this._vehiclesCollection.Find(filter).SortByDescending(v => v.Id);
             var totalVehicles = await vehiclesQuery.ToListAsync();
             return totalVehicles.Count();
         }
 
-        public async Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int pageNumber, int vehiclesPerPage, string sortOder)
+        public async Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string userId, string searchUrl, int pageNumber, int vehiclesPerPage, string sortOder)
         {
-            var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl);
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl) & Builders<Vehicle>.Filter.Eq(v => v.UserId, userId);
             var projection = Builders<Vehicle>.Projection.Expression(v => new VehicleInListViewModel
             {
                 Id = v.Id,
@@ -212,6 +212,12 @@ namespace MobileBgWatch.Services
             var vehicleFromDb = await this._vehiclesCollection.Find(v => v.VehicleAdId == vehicleAdId).FirstOrDefaultAsync();
 
             return this._mapper.Map<VehicleViewModel>(vehicleFromDb);
+        }
+
+        public async Task DeleteVehiclesForSearchUrlAsync(string userId, string searchUrl)
+        {
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl) & Builders<Vehicle>.Filter.Eq(v => v.UserId, userId);
+            await this._vehiclesCollection.DeleteManyAsync(filter);
         }
     }
 }

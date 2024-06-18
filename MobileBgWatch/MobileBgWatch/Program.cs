@@ -1,7 +1,5 @@
 using AngleSharp;
-using AspNetCore.Identity.MongoDbCore.Infrastructure;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using MobileBgWatch.Models;
 using MobileBgWatch.Profiles;
 using MobileBgWatch.Services;
@@ -61,6 +59,7 @@ namespace MobileBgWatch
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IScraperService, ScraperService>();
             builder.Services.AddScoped<IVehicleService, VehicleService>();
+            builder.Services.AddScoped<ISearchUrlService, SearchUrlService>();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 

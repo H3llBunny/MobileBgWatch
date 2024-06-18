@@ -1,8 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using MobileBgWatch.Models;
-using MobileBgWatch.ViewModels;
-
+    
 namespace MobileBgWatch.Services
 {
     public class ScraperService : IScraperService

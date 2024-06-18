@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MobileBgWatch.Models;
 using MongoDB.Driver;
 
@@ -9,11 +8,13 @@ namespace MobileBgWatch.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMongoCollection<ApplicationUser> _userCollection;
+        private readonly IVehicleService _vehicleService;
 
-        public UsersService(UserManager<ApplicationUser> userManager, IMongoCollection<ApplicationUser> userCollection)
+        public UsersService(UserManager<ApplicationUser> userManager, IMongoCollection<ApplicationUser> userCollection, IVehicleService vehicleService)
         {
             this._userManager = userManager;
             this._userCollection = userCollection;
+            this._vehicleService = vehicleService;
         }
 
         public async Task<bool> UserSearchUrlLimitAsync(string userId)
@@ -25,13 +26,12 @@ namespace MobileBgWatch.Services
         public async Task<bool> SearchUrlAlreadyExist(string userId, string searchUrl)
         {
             var user = await this._userManager.FindByIdAsync(userId);
-            return user.SearchUrls.Contains(searchUrl);
+            return user.SearchUrls.Any(u => u.Url == searchUrl);
         }
         public async Task AddSearchUrlToUserAsync(string userId, string searchUrl)
         {
             var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
-            var update = Builders<ApplicationUser>.Update
-                .Push(u => u.SearchUrls, searchUrl);
+            var update = Builders<ApplicationUser>.Update.Push(u => u.SearchUrls, new SearchUrl { Url = searchUrl, LastRefresh = DateTime.UtcNow });
 
             var options = new FindOneAndUpdateOptions<ApplicationUser>
             {
@@ -44,8 +44,8 @@ namespace MobileBgWatch.Services
         public async Task DeleteSearchUrlAsync(string userId, string searchUrl)
         {
             var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
-            var update = Builders<ApplicationUser>.Update
-                .Pull(u => u.SearchUrls, searchUrl);
+            var update = Builders<ApplicationUser>.Update.PullFilter(u => u.SearchUrls,
+                Builders<SearchUrl>.Filter.Eq(s => s.Url, searchUrl));
 
             var options = new FindOneAndUpdateOptions<ApplicationUser>
             {
@@ -53,6 +53,7 @@ namespace MobileBgWatch.Services
             };
 
             await this._userCollection.FindOneAndUpdateAsync(filter, update, options);
+            await this._vehicleService.DeleteVehiclesForSearchUrlAsync(userId, searchUrl);
         }
         public async Task<bool> NewPasswordCheckAsync(string userId, string newPassword)
         {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MobileBgWatch.Services;
 using MobileBgWatch.ViewModels;
+using System.Security.Claims;
 
 namespace MobileBgWatch.Controllers
 {
@@ -30,13 +31,15 @@ namespace MobileBgWatch.Controllers
 
             const int VehiclesPerPage = 36;
 
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             var viewModel = new VehiclesListViewModel
             {
                 VehiclesPerPage = VehiclesPerPage,
                 PageNumber = pageNumber,
                 SearchUrl = searchUrl,
-                VehiclesCount = await this._vehicleService.GetTotalAdsCountAsync(searchUrl),
-                Vehicles = await this._vehicleService.GetAllAsync(searchUrl, pageNumber, VehiclesPerPage, sortOrder),
+                VehiclesCount = await this._vehicleService.GetTotalAdsCountAsync(userId, searchUrl),
+                Vehicles = await this._vehicleService.GetAllAsync(userId, searchUrl, pageNumber, VehiclesPerPage, sortOrder),
                 SortOrder = sortOrder
             };
 

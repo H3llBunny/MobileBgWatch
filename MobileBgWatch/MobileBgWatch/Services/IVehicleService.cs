@@ -9,7 +9,7 @@ namespace MobileBgWatch.Services
 
         Task<SearchUrlsListViewModel> GetSearchUrlsListAsync(string userId, int? count = null);
 
-        Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string searchUrl, int pageNumber, int vehiclesPerPage, string sortOrder);
+        Task<IEnumerable<VehicleInListViewModel>> GetAllAsync(string userId, string searchUrl, int pageNumber, int vehiclesPerPage, string sortOrder);
 
         bool DoesVehicleAdExist(Vehicle vehicle);
 
@@ -17,12 +17,14 @@ namespace MobileBgWatch.Services
 
         Task UpdateVehiclePriceAsync(Vehicle vehicle);
 
-        Task<int> GetTotalAdsCountAsync(string searchUrl);
+        Task<int> GetTotalAdsCountAsync(string userId, string searchUrl);
 
         Task DeletedSoldVehiclesAsync(ICollection<Vehicle> currentVehicles);
 
         Task ImageUrlUpdaterAsync(Vehicle vehicle);
 
         Task<VehicleViewModel> GetVehicleByAdIdAsync(long vehicleAdId);
+
+        Task DeleteVehiclesForSearchUrlAsync(string userId, string searchUrl);
     }
 }

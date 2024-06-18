@@ -5,10 +5,10 @@
 }
 
 @{
-    @if (ViewBag.ErrorMessage != null)
+    @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger col-md-6">
-            @ViewBag.ErrorMessage
+            @TempData["ErrorMessage"]
         </div>
     }
 

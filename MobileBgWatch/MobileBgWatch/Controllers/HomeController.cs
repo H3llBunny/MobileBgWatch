@@ -14,13 +14,15 @@ namespace MobileBgWatch.Controllers
         private readonly IUsersService _usersService;
         private readonly IScraperService _scraperService;
         private readonly IVehicleService _vehicleService;
+        private readonly ISearchUrlService _searchUrlService;
 
-        public HomeController(ILogger<HomeController> logger, IUsersService usersService, IScraperService scraperService, IVehicleService vehicleService)
+        public HomeController(ILogger<HomeController> logger, IUsersService usersService, IScraperService scraperService, IVehicleService vehicleService, ISearchUrlService searchUrlService)
         {
             _logger = logger;
             this._usersService = usersService;
             this._scraperService = scraperService;
             this._vehicleService = vehicleService;
+            this._searchUrlService = searchUrlService;
         }
 
         public async Task<IActionResult> Index()
@@ -53,21 +55,21 @@ namespace MobileBgWatch.Controllers
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
-                ViewBag.ErrorMessage = "Please ensure the URL is valid and try again";
-                return View("Index");
+                TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
+                return RedirectToAction("Index");
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!await this._usersService.UserSearchUrlLimitAsync(userId))
             {
-                ViewBag.ErrorMessage = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
-                return View("Index");
+                TempData["ErrorMessage"] = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
+                return RedirectToAction("Index");
             }
 
             if (await this._usersService.SearchUrlAlreadyExist(userId, searchUrl))
             {
-                ViewBag.ErrorMessage = "Search Url already exist.";
-                return View("Index");
+                TempData["ErrorMessage"] = "Search Url already exist.";
+                return RedirectToAction("Index");
             }
 
             try
@@ -80,8 +82,8 @@ namespace MobileBgWatch.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Index");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index");
@@ -93,28 +95,36 @@ namespace MobileBgWatch.Controllers
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
-                ViewBag.ErrorMessage = "Please ensure the URL is valid and try again";
-                return View("Index");
+                TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
+                return RedirectToAction("Index");
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!await this._usersService.UserSearchUrlLimitAsync(userId))
             {
-                ViewBag.ErrorMessage = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
-                return View("Index");
+                TempData["ErrorMessage"] = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
+                return RedirectToAction("Index");
             }
 
             try
             {
+                if (!await this._searchUrlService.CanRefreshAsync(userId, searchUrl))
+                {
+                    TempData["ErrorMessage"] = "You can only refresh each URL once every 15 minutes.";
+                    return RedirectToAction("Index");
+                }
+
                 var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
                 var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
                 await this._vehicleService.AddVehicleAsync(vehicleList);
                 await this._vehicleService.DeletedSoldVehiclesAsync(vehicleList);
+
+                await this._searchUrlService.UpdateLastRefreshAsync(userId, searchUrl);
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = ex.Message;
-                return View("Index");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index");
@@ -126,8 +136,8 @@ namespace MobileBgWatch.Controllers
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
-                ViewBag.ErrorMessage = "Please ensure the URL is valid and try again";
-                return View("Index");
+                TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
+                return RedirectToAction("Index");
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -138,8 +148,8 @@ namespace MobileBgWatch.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.ErrorMessage = "An error occurred while updating the database.";
-                return View("Index");
+                TempData["ErrorMessage"] = "An error occurred while updating the database.";
+                return RedirectToAction("Index");
             }
 
             return RedirectToAction("Index");

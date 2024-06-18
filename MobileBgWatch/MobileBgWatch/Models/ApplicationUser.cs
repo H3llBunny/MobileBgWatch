@@ -8,9 +8,9 @@ namespace MobileBgWatch.Models
     {
         public ApplicationUser()
         {
-            this.SearchUrls = new List<string>();
+            this.SearchUrls = new List<SearchUrl>();
         }
 
-        public ICollection<string> SearchUrls { get; set; }
+        public ICollection<SearchUrl> SearchUrls { get; set; }
     }
 }
