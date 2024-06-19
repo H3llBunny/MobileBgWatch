@@ -8,6 +8,8 @@ namespace MobileBgWatch.ViewModels
 
         public int TotalAdsCount { get; set; }
 
+        public DateTime LastRefresh { get; set; }
+
         public IEnumerable<VehicleInListViewModel> Vehicles { get; set; }
     }
 }

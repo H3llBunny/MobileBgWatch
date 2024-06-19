@@ -63,16 +63,17 @@ namespace MobileBgWatch.Services
 
             var searchUrlList = new SearchUrlsListViewModel();
 
-            foreach (var url in user.SearchUrls.Select(s => s.Url))
+            foreach (var url in user.SearchUrls)
             {
-                var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, url) & Builders<Vehicle>.Filter.Eq(v => v.UserId, userId);
+                var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, url.Url) & Builders<Vehicle>.Filter.Eq(v => v.UserId, userId);
                 var vehiclesQuery = this._vehiclesCollection.Find(filter).SortByDescending(v => v.Id);
-                int totalAdsCount = await GetTotalAdsCountAsync(userId, url);
+                int totalAdsCount = await GetTotalAdsCountAsync(userId, url.Url);
                 var vehicles = await (count.HasValue ? vehiclesQuery.Limit(count.Value) : vehiclesQuery).ToListAsync();
                 var searchUrlModel = new SearchUrlViewModel
                 {
-                    SearchUrl = url,
+                    SearchUrl = url.Url,
                     TotalAdsCount = totalAdsCount,
+                    LastRefresh = url.LastRefresh,
                     Vehicles = vehicles.Select(v => new VehicleInListViewModel
                     {
                         Id = v.Id,
