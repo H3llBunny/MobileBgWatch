@@ -33,6 +33,11 @@ namespace MobileBgWatch
                 .AddMongoDbStores<ApplicationUser, ApplicationRole, string>(mongoDbSettings.ConnectionString, mongoDbSettings.Database)
                 .AddDefaultTokenProviders();
 
+            builder.Services.ConfigureApplicationCookie(option =>
+            {
+                option.LoginPath = "/User/Login";
+            });
+
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;

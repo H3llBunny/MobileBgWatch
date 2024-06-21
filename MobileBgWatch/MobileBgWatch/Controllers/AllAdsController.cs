@@ -21,7 +21,7 @@ namespace MobileBgWatch.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return Redirect("User/Login");
+                return this.RedirectToAction(nameof(UserController.Login), "User");
             }
 
             if (pageNumber <= 0)

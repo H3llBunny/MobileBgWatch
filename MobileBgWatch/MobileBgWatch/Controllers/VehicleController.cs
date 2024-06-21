@@ -16,7 +16,7 @@ namespace MobileBgWatch.Controllers
         public async Task<IActionResult> GetVehicleAd(long vehicleAdId)
         {
             var vehicleViewModel = await this.vehicleService.GetVehicleByAdIdAsync(vehicleAdId);
-            return View(vehicleViewModel);
+            return this.View(vehicleViewModel);
         }
     }
 }

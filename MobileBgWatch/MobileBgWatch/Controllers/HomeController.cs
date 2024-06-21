@@ -29,24 +29,24 @@ namespace MobileBgWatch.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return View();
+                return this.View();
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             SearchUrlsListViewModel searchUrlsViewModel = await this._vehicleService.GetSearchUrlsListAsync(userId, 40);
 
-            return View(searchUrlsViewModel);
+            return this.View(searchUrlsViewModel);
         }
 
         public IActionResult Privacy()
         {
-            return View();
+            return this.View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         [HttpPost]
@@ -55,21 +55,21 @@ namespace MobileBgWatch.Controllers
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
-                TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!await this._usersService.UserSearchUrlLimitAsync(userId))
             {
-                TempData["ErrorMessage"] = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             if (await this._usersService.SearchUrlAlreadyExist(userId, searchUrl))
             {
-                TempData["ErrorMessage"] = "Search Url already exist.";
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = "Search Url already exist.";
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             try
@@ -78,15 +78,15 @@ namespace MobileBgWatch.Controllers
                 var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
                 await this._vehicleService.AddVehicleAsync(vehicleList);
                 await this._usersService.AddSearchUrlToUserAsync(userId, searchUrl);
-                TempData["SuccessMessage"] = "New search URL has been successfully added.";
+                this.TempData["SuccessMessage"] = "New search URL has been successfully added.";
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index");
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(nameof(this.Index));
         }
 
         [HttpGet]
@@ -95,23 +95,23 @@ namespace MobileBgWatch.Controllers
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
-                TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!await this._usersService.UserSearchUrlLimitAsync(userId))
             {
-                TempData["ErrorMessage"] = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             try
             {
                 if (!await this._searchUrlService.CanRefreshAsync(userId, searchUrl))
                 {
-                    TempData["ErrorMessage"] = "You can only refresh each URL once every 15 minutes.";
-                    return RedirectToAction("Index");
+                    this.TempData["ErrorMessage"] = "You can only refresh each URL once every 15 minutes.";
+                    return this.RedirectToAction(nameof(this.Index));
                 }
 
                 var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
@@ -123,11 +123,11 @@ namespace MobileBgWatch.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = ex.Message;
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(nameof(this.Index));
         }
 
         [HttpGet]
@@ -136,23 +136,23 @@ namespace MobileBgWatch.Controllers
         {
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
-                TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = "Please ensure the URL is valid and try again";
+                return this.RedirectToAction(nameof(this.Index));
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             try
             {
                 await this._usersService.DeleteSearchUrlAsync(userId, searchUrl);
-                TempData["SuccessMessage"] = "Link has been successfully deleted.";
+                this.TempData["SuccessMessage"] = "Link has been successfully deleted.";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "An error occurred while updating the database.";
-                return RedirectToAction("Index");
+                this.TempData["ErrorMessage"] = "An error occurred while updating the database.";
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

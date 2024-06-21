@@ -31,7 +31,7 @@ namespace MobileBgWatch.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(User user)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 ApplicationUser appUser = new ApplicationUser
                 {
@@ -43,34 +43,35 @@ namespace MobileBgWatch.Controllers
                 IdentityResult result = await this._userManager.CreateAsync(appUser, user.Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Login");
+                    return this.RedirectToAction(nameof(this.Login));
                 }
                 else
                 {
                     foreach (var error in result.Errors)
-                        ModelState.AddModelError("", error.Description);
+                        this.ModelState.AddModelError("", error.Description);
                 }
             }
 
             return this.View(user);
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
             if (this._signInManager.IsSignedIn(User))
             {
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
+            this.ViewData["ReturnUrl"] = returnUrl;
             return this.View();
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(UserLogin user, string returnurl = null)
+        public async Task<IActionResult> Login(UserLogin user, string returnUrl = null)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 ApplicationUser appUser = await this._userManager.FindByEmailAsync(user.Email);
                 if (appUser != null)
@@ -78,12 +79,14 @@ namespace MobileBgWatch.Controllers
                     Microsoft.AspNetCore.Identity.SignInResult result = await this._signInManager.PasswordSignInAsync(appUser, user.Password, false, false);
                     if (result.Succeeded)
                     {
-                        return this.Redirect(returnurl ?? "/");
+                        return this.Redirect(returnUrl ?? "/");
                     }
                 }
-                ModelState.AddModelError("", "Login Failed: Invalid Email or Password");
+
+                this.ModelState.AddModelError("", "Login Failed: Invalid Email or Password");
             }
 
+            this.ViewData["ReturnUrl"] = returnUrl;
             return this.View();
         }
 
@@ -91,7 +94,7 @@ namespace MobileBgWatch.Controllers
         public async Task<IActionResult> Logout()
         {
             await this._signInManager.SignOutAsync();
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         [Authorize]
@@ -112,7 +115,7 @@ namespace MobileBgWatch.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePassword model)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 var user = await this._userManager.FindByNameAsync(User.Identity.Name);
                 string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -124,16 +127,16 @@ namespace MobileBgWatch.Controllers
                     if (isNewPasswordDifferent)
                     {
                         await this._usersService.UpdatePasswordAsync(userId, model.NewPassword);
-                        ViewBag.Message = "Password changed successfully!";
+                        this.ViewBag.Message = "Password changed successfully!";
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "New password must be different from old password.");
+                        this.ModelState.AddModelError(string.Empty, "New password must be different from old password.");
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Incorrect Password");
+                    this.ModelState.AddModelError(string.Empty, "Incorrect Password");
                 }
             }
 
@@ -161,15 +164,15 @@ namespace MobileBgWatch.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignOutAsync();
-                return RedirectToAction("Index", "Home");
+                return this.RedirectToAction(nameof(HomeController.Index), "Home");
             }
             else
             {
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    this.ModelState.AddModelError("", error.Description);
                 }
-                return RedirectToAction("PersonalData");
+                return this.RedirectToAction(nameof(this.PersonalData));
             }
         }
     }

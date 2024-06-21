@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string returnUrl = ViewData["ReturnUrl"] as string;
 }
 
 <h1 class="text-white text-center">Login</h1>
@@ -20,6 +21,7 @@
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
     <p></p>
+    <input type="hidden" name="returnUrl" value="@returnUrl" />
     <button class="btn btn-primary" type="submit">Login</button>
 </form>
 

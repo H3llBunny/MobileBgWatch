@@ -7,6 +7,7 @@ namespace MobileBgWatch.Services
     public class SearchUrlService : ISearchUrlService
     {
         private readonly IMongoCollection<ApplicationUser> _userCollection;
+        private const int CooldownTime = 15;
 
         public SearchUrlService(IMongoCollection<ApplicationUser> userCollection)
         {
@@ -18,7 +19,7 @@ namespace MobileBgWatch.Services
             var user = await this._userCollection.Find(filter).FirstOrDefaultAsync();
             var searchUrlEntity = user.SearchUrls.FirstOrDefault(s => s.Url == searchUrl);
 
-            return searchUrlEntity.LastRefresh.AddMinutes(15) <= DateTime.UtcNow;
+            return searchUrlEntity.LastRefresh.AddMinutes(CooldownTime) <= DateTime.UtcNow;
         }
 
         public async Task UpdateLastRefreshAsync(string userId, string searchUrl)
