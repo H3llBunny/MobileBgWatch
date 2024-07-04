@@ -271,7 +271,6 @@ img.carousel-image {
     .carousel-indicators img {
         width: 70px;
         display: block;
-        display: flex;
         justify-content: center;
         align-items: center;
         width: 70px;
@@ -281,6 +280,7 @@ img.carousel-image {
 
     .carousel-indicators button {
         width: max-content !important;
+        display: inline-grid;
     }
 
         .carousel-indicators button.active img {
