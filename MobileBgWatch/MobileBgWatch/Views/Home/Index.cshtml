@@ -31,7 +31,7 @@
         <div id="searchUrlBox" class="col-md-6">
             <form asp-action="AddSearchUrl" method="post" class="d-flex align-items-center">
                 <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Type your mobile.bg search url item link" oninput="checkInput()" />
-                <input id="submitButton" class="btn btn-primary" type="submit" value="Add" disabled />
+                <button id="submitButton" class="btn btn-primary" type="submit" disabled>Add</button>
             </form>
         </div>
         @if (Model?.SearchUrls != null)
@@ -130,16 +130,16 @@
 <script>
     // Function to check input and enable/disable submit button
     function checkInput() {
-        var inputField = document.getElementById("searchUrlInput");
-        var submitButton = document.getElementById("submitButton");
-        submitButton.disabled = inputField.value.trim() === "";
+        const inputField = document.getElementById("searchUrlInput");
+        const submitButton = document.getElementById("submitButton");
+        submitButton.disabled = inputField.value.trim() === '';
     }
 
     // Function to format total seconds into MM:SS format
     function formatTimeLeft(totalSeconds) {
         var minutes = Math.floor(totalSeconds / 60);
         var seconds = totalSeconds % 60;
-        return ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+        return String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
     }
 
     // Function to store scroll position in sessionStorage
@@ -166,12 +166,12 @@
 
         // Iterate over each refresh button to manage countdown timer
         document.querySelectorAll('.refresh-button').forEach(function (button) {
-            var timeLeft = parseInt(button.getAttribute('data-time-left'));
-            var timerElement = button.querySelector('.refresh-timer');
+            let timeLeft = parseInt(button.getAttribute('data-time-left'));
+            const timerElement = button.querySelector('.refresh-timer');
 
             if (timeLeft > 0) {
                 button.classList.add('disabled'); // Disable button initially
-                var interval = setInterval(function () {
+                const interval = setInterval(function () {
                     timeLeft--;
                     timerElement.textContent = '(' + formatTimeLeft(timeLeft) + ')';
                     if (timeLeft <= 0) {
@@ -190,8 +190,8 @@
         document.querySelectorAll('.delete-button').forEach(function (button) {
             button.addEventListener('click', function (event) {
                 event.preventDefault();
-                var url = button.getAttribute('data-url');
-                var confirmation = confirm('Are you sure you want to delete this link?');
+                const url = button.getAttribute('data-url');
+                const confirmation = confirm('Are you sure you want to delete this link?');
                 if (confirmation) {
                     window.location.href = 'Home/DeleteUrl?searchUrl=' + encodeURIComponent(url);
                 }

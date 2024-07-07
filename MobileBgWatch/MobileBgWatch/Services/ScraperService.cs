@@ -1,7 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using MobileBgWatch.Models;
-    
+
 namespace MobileBgWatch.Services
 {
     public class ScraperService : IScraperService
@@ -18,40 +18,50 @@ namespace MobileBgWatch.Services
             var vehicleUrls = new List<string>();
             string initialUrl = searchUrl;
 
-            var initialDocument = await this._context.OpenAsync(initialUrl);
+            try
+            {
+                var initialDocument = await this._context.OpenAsync(initialUrl);
 
-            int totalPages = 0;
-            var paginationElement = initialDocument.QuerySelector("div.pagination a.saveSlink.gray");
-            if (paginationElement != null)
-            {
-                int.TryParse(paginationElement.TextContent.Trim(), out totalPages);
-            }
-            else
-            {
-                var paginationElements = initialDocument.QuerySelectorAll("div.pagination a.saveSlink");
-                totalPages = paginationElements
-                    .Where(x => int.TryParse(x.TextContent, out _))
-                    .Select(x => int.Parse(x.TextContent))
-                    .Max();
-            }
+                if (initialDocument == null)
+                {
+                    throw new Exception("Failed to load the initial document. Please ensure the URL is valid and try again.");
+                }
 
-            if (totalPages >= 1)
-            {
+                int totalPages = 0;
+                var paginationElement = initialDocument.QuerySelector("div.pagination a.saveSlink.gray");
+                if (paginationElement != null)
+                {
+                    int.TryParse(paginationElement.TextContent.Trim(), out totalPages);
+                }
+                else
+                {
+                    var paginationElements = initialDocument.QuerySelectorAll("div.pagination a.saveSlink");
+                    if (paginationElements != null && paginationElements.Any())
+                    {
+                        totalPages = paginationElements
+                            .Where(x => int.TryParse(x.TextContent, out _))
+                            .Select(x => int.Parse(x.TextContent))
+                            .DefaultIfEmpty(0)
+                            .Max();
+                    }
+                }
+
+                if (totalPages < 1)
+                {
+                    throw new Exception("No pages found. Please ensure the URL is valid and try again.");
+                }
+
                 for (int page = 1; page <= totalPages; page++)
                 {
-                    string currentPageUrl;
-
-                    if (initialUrl.Contains("?"))
-                    {
-                        int substringIndex = initialUrl.IndexOf("?");
-                        currentPageUrl = initialUrl.Insert(substringIndex, $"/p-{page}");
-                    }
-                    else
-                    {
-                        currentPageUrl = initialUrl + $"/p-{page}";
-                    }
+                    string currentPageUrl = initialUrl.Contains("?")
+                        ? initialUrl.Insert(initialUrl.IndexOf("?"), $"/p-{page}")
+                        : initialUrl + $"/p-{page}";
 
                     var currentPageDocument = await _context.OpenAsync(currentPageUrl);
+                    if (currentPageDocument == null)
+                    {
+                        continue;
+                    }
 
                     var vehicleAdLinks = currentPageDocument.QuerySelectorAll("div.photo div.big a");
 
@@ -65,9 +75,9 @@ namespace MobileBgWatch.Services
 
                 return vehicleUrls;
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception("Please ensure the URL is valid and try again.");
+                throw new Exception("An error occurred while processing the URL: " + ex.Message);
             }
         }
 
