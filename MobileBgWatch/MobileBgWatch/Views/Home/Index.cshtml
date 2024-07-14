@@ -128,26 +128,22 @@
 }
 
 <script>
-    // Function to check input and enable/disable submit button
     function checkInput() {
         const inputField = document.getElementById("searchUrlInput");
         const submitButton = document.getElementById("submitButton");
         submitButton.disabled = inputField.value.trim() === '';
     }
 
-    // Function to format total seconds into MM:SS format
     function formatTimeLeft(totalSeconds) {
         var minutes = Math.floor(totalSeconds / 60);
         var seconds = totalSeconds % 60;
         return String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
     }
 
-    // Function to store scroll position in sessionStorage
     function storeScrollPosition() {
         sessionStorage.setItem('scrollPosition', window.scrollY);
     }
 
-    // Function to restore scroll position from sessionStorage
     function restoreScrollPosition() {
         if (!('@TempData["ErrorMessage"]' || '@TempData["LimitMessage"]' || '@TempData["SuccessMessage"]')) {
             const scrollPosition = sessionStorage.getItem('scrollPosition');
@@ -158,25 +154,23 @@
         }
     }
 
-    // Event listener for DOMContentLoaded event
     document.addEventListener("DOMContentLoaded", function () {
-        checkInput(); // Check input initially
+        checkInput();
 
-        restoreScrollPosition(); // Restore scroll position if available
+        restoreScrollPosition();
 
-        // Iterate over each refresh button to manage countdown timer
         document.querySelectorAll('.refresh-button').forEach(function (button) {
             let timeLeft = parseInt(button.getAttribute('data-time-left'));
             const timerElement = button.querySelector('.refresh-timer');
 
             if (timeLeft > 0) {
-                button.classList.add('disabled'); // Disable button initially
+                button.classList.add('disabled');
                 const interval = setInterval(function () {
                     timeLeft--;
                     timerElement.textContent = '(' + formatTimeLeft(timeLeft) + ')';
                     if (timeLeft <= 0) {
                         clearInterval(interval);
-                        button.classList.remove('disabled'); // Enable button when countdown completes
+                        button.classList.remove('disabled');
                         timerElement.style.display = 'none';
                     }
                 }, 1000);
@@ -186,7 +180,6 @@
             }
         });
 
-        // Event listener for delete button clicks
         document.querySelectorAll('.delete-button').forEach(function (button) {
             button.addEventListener('click', function (event) {
                 event.preventDefault();
@@ -199,14 +192,12 @@
         });
     });
 
-    // Event listener for click events (to handle refresh button behavior)
     document.addEventListener('click', function (event) {
         const refreshButton = event.target.closest('.refresh-button');
         if (refreshButton) {
-            window.addEventListener('beforeunload', storeScrollPosition); // Store scroll position before page unload
+            window.addEventListener('beforeunload', storeScrollPosition);
         }
     });
 
-    // Event listener for beforeunload event (to store scroll position)
     window.addEventListener('beforeunload', storeScrollPosition);
 </script>
