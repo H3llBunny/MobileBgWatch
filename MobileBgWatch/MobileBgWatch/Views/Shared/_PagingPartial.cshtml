@@ -1,10 +1,10 @@
 ﻿@model MobileBgWatch.ViewModels.VehiclesListViewModel
 <nav aria-label="...">
     <ul class="pagination justify-content-center">
+        <li class="page-item @if (!Model.HasPreviousPage) { <text>disabled</text> }"><a class="page-link" asp-action="GetAllAds" asp-route-searchUrl="@Model.SearchUrl" asp-route-pageNumber="1" asp-route-sortOrder="@Model.SortOrder">First</a></li>
         <li class="page-item @if (!Model.HasPreviousPage) { <text>disabled</text> }">
             <a class="page-link" asp-action="GetAllAds" asp-route-searchUrl="@Model.SearchUrl" asp-route-pageNumber="@Model.PreviousPageNumber" asp-route-sortOrder="@Model.SortOrder">Previous</a>
         </li>
-        <li class="page-item @if (!Model.HasPreviousPage) { <text>disabled</text> }"><a class="page-link" asp-action="GetAllAds" asp-route-searchUrl="@Model.SearchUrl" asp-route-pageNumber="1" asp-route-sortOrder="@Model.SortOrder">First</a></li>
         @for (int i = Model.PageNumber - 4; i < Model.PageNumber; i++)
         {
             if (i > 0)
@@ -25,9 +25,9 @@
                 <li class="page-item"><a class="page-link" asp-action="GetAllAds" asp-route-searchUrl="@Model.SearchUrl" asp-route-pageNumber="@i" asp-route-sortOrder="@Model.SortOrder">@i</a></li>
             }
         }
-        <li class="page-item @if (!Model.HasNextPage) { <text>disabled</text> }"><a class="page-link" asp-action="GetAllAds" asp-route-searchUrl="@Model.SearchUrl" asp-route-pageNumber="@Model.PagesCount" asp-route-sortOrder="@Model.SortOrder">Last</a></li>
         <li class="page-item @if (!Model.HasNextPage) { <text>disabled</text> }">
             <a class="page-link" asp-action="GetAllAds" asp-route-searchUrl="@Model.SearchUrl" asp-route-pageNumber="@Model.NextPageNumber" asp-route-sortOrder="@Model.SortOrder">Next</a>
         </li>
+        <li class="page-item @if (!Model.HasNextPage) { <text>disabled</text> }"><a class="page-link" asp-action="GetAllAds" asp-route-searchUrl="@Model.SearchUrl" asp-route-pageNumber="@Model.PagesCount" asp-route-sortOrder="@Model.SortOrder">Last (@Model.PagesCount)</a></li>
     </ul>
 </nav>
