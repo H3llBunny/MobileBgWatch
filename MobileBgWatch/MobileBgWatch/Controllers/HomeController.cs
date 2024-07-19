@@ -100,11 +100,6 @@ namespace MobileBgWatch.Controllers
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            //if (!await this._usersService.UserSearchUrlLimitAsync(userId))
-            //{
-            //    this.TempData["ErrorMessage"] = "You have reached the limit of 5 search URLs. I might add a monetization to expand it later in the development.";
-            //    return this.RedirectToAction(nameof(this.Index));
-            //}
 
             try
             {
