@@ -38,5 +38,12 @@ namespace MobileBgWatch.Services
 
             var updatedUser = await this._userCollection.FindOneAndUpdateAsync(filter, update, options);
         }
+
+        public async Task<bool> DoesUrlExist(string userId, string searchUrl)
+        {
+            var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
+            var user = await this._userCollection.Find(filter).FirstOrDefaultAsync();
+            return user.SearchUrls.Any(s => s.Url == searchUrl);
+        }
     }
 }

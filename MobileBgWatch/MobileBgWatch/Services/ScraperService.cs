@@ -90,13 +90,13 @@ namespace MobileBgWatch.Services
                 foreach (var url in vehicleUrls)
                 {
                     var document = await this._context.OpenAsync(url);
-                    var nameElement = document.QuerySelector("div.obTitle");
+                    var nameElement = document.QuerySelector("div.obTitle h1");
                     if (nameElement == null)
                     {
                         continue;
                     }
 
-                    string name = nameElement.FirstChild.Text().Trim();
+                    string name = nameElement.FirstChild.TextContent.Trim();
                     var secondPartOfName = document.QuerySelector("div.obTitle span");
                     if (secondPartOfName != null)
                     {
@@ -155,7 +155,7 @@ namespace MobileBgWatch.Services
                     {
                         foreach (var imgUrlElement in imgUrlElements)
                         {
-                            imgUrls.Add("https:" + imgUrlElement.GetAttribute("data-src-gallery"));
+                            imgUrls.Add(imgUrlElement.GetAttribute("data-src-gallery"));
                         }
                     }
                     else

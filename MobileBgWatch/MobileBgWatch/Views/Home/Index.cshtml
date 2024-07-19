@@ -174,12 +174,16 @@
                     if (timeLeft <= 0) {
                         clearInterval(interval);
                         button.classList.remove('disabled');
-                        timerElement.style.display = 'none';
+                        if (timerElement) {
+                            timerElement.style.display = 'none';
+                        }
                     }
                 }, 1000);
             } else {
                 button.classList.remove('disabled');
-                timerElement.style.display = 'none';
+                if (timerElement) {
+                    timerElement.style.display = 'none';
+                }
             }
         });
 
