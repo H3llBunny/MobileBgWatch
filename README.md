@@ -1,9 +1,9 @@
 # MobileBgWatch
-This is a work-in-progress web app that allows you easily to monitor specific searches from mobile.bg
+This is a work-in-progress web app that allows you to easily monitor specific searches from mobile.bg
 
 # A quick guide:
 
-1. Go to [Mobile.bg](https://www.mobile.bg/) and select your desired filters. After that, click on Search.
+1. Go to <a href="https://www.mobile.bg/" target="_blank">Mobile.bg</a> and select your desired filters. After that, click on Search.
 
 ![image](https://github.com/user-attachments/assets/061bcf57-7289-4fb5-8901-423bf05de190)
 
