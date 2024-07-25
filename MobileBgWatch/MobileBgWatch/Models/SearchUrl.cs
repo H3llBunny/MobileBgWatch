@@ -4,6 +4,10 @@
     {
         public string Url { get; set; }
 
-        public DateTime LastRefresh { get; set; }
+        public DateTime LastRefreshByUser { get; set; }
+
+        public DateTime LastRefreshByService { get; set; }
+
+        public int RefreshCounter { get; set; }
     }
 }

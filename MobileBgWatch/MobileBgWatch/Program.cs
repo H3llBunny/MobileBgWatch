@@ -58,7 +58,6 @@ namespace MobileBgWatch
                 return database.GetCollection<ApplicationUser>("Users");
             });
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             builder.Services.AddScoped<IUsersService, UsersService>();
@@ -68,12 +67,15 @@ namespace MobileBgWatch
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+            builder.Services.AddHostedService<AutoRefreshAdsService>();
+
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
             var app = builder.Build();
-            // Configure the HTTP request pipeline.
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

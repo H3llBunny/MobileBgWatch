@@ -74,9 +74,9 @@ namespace MobileBgWatch.Controllers
 
             try
             {
-                var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
-                var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
-                await this._vehicleService.AddVehicleAsync(vehicleList);
+               // var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
+               // var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
+               // await this._vehicleService.AddVehicleAsync(vehicleList);
                 await this._usersService.AddSearchUrlToUserAsync(userId, searchUrl);
                 this.TempData["SuccessMessage"] = "New search URL has been successfully added.";
             }
@@ -103,7 +103,7 @@ namespace MobileBgWatch.Controllers
 
             try
             {
-                if (!await this._searchUrlService.DoesUrlExist(userId, searchUrl))
+                if (!await this._searchUrlService.DoesUrlExistAsync(userId, searchUrl))
                 {
                     this.TempData["ErrorMessage"] = "URL not found!";
                     return this.RedirectToAction(nameof(this.Index));

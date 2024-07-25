@@ -73,7 +73,7 @@ namespace MobileBgWatch.Services
                 {
                     SearchUrl = url.Url,
                     TotalAdsCount = totalAdsCount,
-                    LastRefresh = url.LastRefresh,
+                    LastRefresh = url.LastRefreshByUser,
                     Vehicles = vehicles.Select(v => new VehicleInListViewModel
                     {
                         Id = v.Id,

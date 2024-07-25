@@ -6,6 +6,12 @@
 
         Task UpdateLastRefreshAsync(string userId, string searchUrl);
 
-        Task<bool> DoesUrlExist(string userId, string searchUrl);
+        Task UpdateLastRefreshByServiceAsync(string userId, string searchUrl);
+
+        Task ResetRefreshCounterAsync(string userId, string searchUrl);
+
+        Task UpdateRefreshCounterAsync(string userId, string searchUrl);
+
+        Task<bool> DoesUrlExistAsync(string userId, string searchUrl);
     }
 }

@@ -28,10 +28,12 @@ namespace MobileBgWatch.Services
             var user = await this._userManager.FindByIdAsync(userId);
             return user.SearchUrls.Any(u => u.Url == searchUrl);
         }
+
         public async Task AddSearchUrlToUserAsync(string userId, string searchUrl)
         {
             var filter = Builders<ApplicationUser>.Filter.Eq(u => u.Id, userId);
-            var update = Builders<ApplicationUser>.Update.Push(u => u.SearchUrls, new SearchUrl { Url = searchUrl, LastRefresh = DateTime.UtcNow });
+            var update = Builders<ApplicationUser>.Update.Push(u => u.SearchUrls, 
+                new SearchUrl { Url = searchUrl, LastRefreshByUser = DateTime.UtcNow, LastRefreshByService = DateTime.UtcNow, RefreshCounter = 0 });
 
             var options = new FindOneAndUpdateOptions<ApplicationUser>
             {
@@ -55,6 +57,7 @@ namespace MobileBgWatch.Services
             await this._userCollection.FindOneAndUpdateAsync(filter, update, options);
             await this._vehicleService.DeleteVehiclesForSearchUrlAsync(userId, searchUrl);
         }
+
         public async Task<bool> NewPasswordCheckAsync(string userId, string newPassword)
         {
             var user = await this._userManager.FindByIdAsync(userId);

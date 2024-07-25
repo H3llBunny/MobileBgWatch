@@ -1,19 +1,23 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
+using Microsoft.AspNetCore.Identity;
 using MobileBgWatch.Models;
+using MongoDB.Driver;
 
 namespace MobileBgWatch.Services
 {
     public class ScraperService : IScraperService
     {
         private IBrowsingContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ScraperService(IBrowsingContext context)
+        public ScraperService(IBrowsingContext context, UserManager<ApplicationUser> userManager)
         {
             this._context = context;
+            this._userManager = userManager;
         }
 
-        public async Task<IEnumerable<string>> GetAllVehicleAdUrlsAsync(string searchUrl)
+        public async Task<IEnumerable<string>> GetAllVehicleAdUrlsAsync(string searchUrl, string userId, bool shortScrape)
         {
             var vehicleUrls = new List<string>();
             string initialUrl = searchUrl;
@@ -69,6 +73,17 @@ namespace MobileBgWatch.Services
                     {
                         string href = link.GetAttribute("href");
                         string fullUrl = "https:" + href;
+
+                        if (shortScrape)
+                        {
+                            var user = await this._userManager.FindByIdAsync(userId);
+                            if (user.SearchUrls.Any(s => s.Url == searchUrl))
+                            {
+                                return vehicleUrls;
+                            }
+                            
+                        }
+
                         vehicleUrls.Add(fullUrl);
                     }
                 }
