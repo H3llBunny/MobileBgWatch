@@ -57,7 +57,7 @@ namespace MobileBgWatch.Services
 
                 foreach (var url in user?.SearchUrls)
                 {
-                    if ((DateTime.UtcNow - url.LastRefreshByService).TotalMinutes >= 60)
+                    if (url.RefreshCounter == 3 && (DateTime.UtcNow - url.LastRefreshByService).TotalMinutes >= 15)
                     {
                         var allUrls = (await scraperService.GetAllVehicleAdUrlsAsync(url.Url)).ToList();
                         var vehicleList = await scraperService.CreateVehiclesListAsync(allUrls, user.Id, url.Url);
