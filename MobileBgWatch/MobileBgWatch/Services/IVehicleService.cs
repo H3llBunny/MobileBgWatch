@@ -28,5 +28,9 @@ namespace MobileBgWatch.Services
         Task DeleteVehiclesForSearchUrlAsync(string userId, string searchUrl);
 
         Task UpdateFavorite(string vehicleId, bool favorite);
+
+        Task<int> GetTotalFavoritesCountAsync(string userId);
+
+        Task<IEnumerable<VehicleInListViewModel>> GetFavoties(string userId, int pageNumber, int VehiclesPerPage, string sortOrder);
     }
 }

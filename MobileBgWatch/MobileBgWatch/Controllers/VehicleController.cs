@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MobileBgWatch.Models;
 using MobileBgWatch.Services;
 using MobileBgWatch.ViewModels;
+using System.Security.Claims;
 
 namespace MobileBgWatch.Controllers
 {
@@ -15,6 +17,7 @@ namespace MobileBgWatch.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetVehicleAd(long vehicleAdId)
         {
             var vehicleViewModel = await this._vehicleService.GetVehicleByAdIdAsync(vehicleAdId);
@@ -39,6 +42,36 @@ namespace MobileBgWatch.Controllers
             {
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetFavorites(int pageNumber = 1, string sortOrder = "newest")
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return this.RedirectToAction(nameof(UserController.Login), "User");
+            }
+
+            if (pageNumber <= 0)
+            {
+                return this.NotFound();
+            }
+
+            const int VehiclesPerPage = 36;
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var viewModel = new VehiclesListViewModel
+            {
+                VehiclesPerPage = VehiclesPerPage,
+                PageNumber = pageNumber,
+                VehiclesCount = await this._vehicleService.GetTotalFavoritesCountAsync(userId),
+                Vehicles = await this._vehicleService.GetFavoties(userId, pageNumber, VehiclesPerPage, sortOrder),
+                SortOrder = sortOrder
+            };
+
+            return this.View(viewModel);
         }
     }
 }

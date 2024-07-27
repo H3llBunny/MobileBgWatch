@@ -233,5 +233,51 @@ namespace MobileBgWatch.Services
                 throw new Exception("No vehicle was found with the provided ID.");
             }
         }
+        public async Task<int> GetTotalFavoritesCountAsync(string userId)
+        {
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.UserId, userId) & Builders<Vehicle>.Filter.Eq(v => v.Favorite, true);
+            var vehiclesQuery = this._vehiclesCollection.Find(filter).SortByDescending(v => v.Id);
+            var totalVehicles = await vehiclesQuery.ToListAsync();
+            return totalVehicles.Count();
+        }
+
+        public async Task<IEnumerable<VehicleInListViewModel>> GetFavoties(string userId, int pageNumber, int vehiclesPerPage, string sortOder)
+        {
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.UserId, userId) & Builders<Vehicle>.Filter.Eq(v => v.Favorite, true);
+            var projection = Builders<Vehicle>.Projection.Expression(v => new VehicleInListViewModel
+            {
+                Id = v.Id,
+                ImageUrl = v.ImageUrls.FirstOrDefault(),
+                Name = v.Name,
+                DateAdded = v.DateAdded,
+                VehicleAdId = v.VehicleAdId,
+                CurrentPrice = v.CurrentPrice,
+                PreviousPrice = v.PreviousPrice,
+                Favorite = v.Favorite
+            });
+
+            var query = this._vehiclesCollection.Find(filter);
+
+            switch (sortOder)
+            {
+                case "price_asc":
+                    query = query.SortBy(v => v.CurrentPrice.Price);
+                    break;
+                case "price_desc":
+                    query = query.SortByDescending(v => v.CurrentPrice.Price);
+                    break;
+                default:
+                    query = query.SortByDescending(v => v.Id);
+                    break;
+            }
+
+            var vehicles = await query
+                .Skip((pageNumber - 1) * vehiclesPerPage)
+                .Limit(vehiclesPerPage)
+                .Project(projection)
+                .ToListAsync();
+
+            return vehicles;
+        }
     }
 }

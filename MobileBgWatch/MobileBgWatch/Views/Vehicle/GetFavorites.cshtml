@@ -1,0 +1,104 @@
+﻿@using System.Globalization
+@model MobileBgWatch.ViewModels.VehiclesListViewModel;
+@{
+    ViewData["Title"] = "All Vehicles";
+}
+
+@{
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger col-md-6">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    @if (TempData["LimitMessage"] != null)
+    {
+        <div class="alert alert-warning col-md-6">
+            @TempData["LimitMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success col-md-6">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <h5 id="searchUrlh5">
+        <div class="flex-container">
+            <div class="sort-options">
+                <form id="sortForm" method="get" asp-action="GetFavorites">
+                    <input type="hidden" name="pageNumber" value="1" />
+                    <select name="sortOrder" onchange="document.getElementById('sortForm').submit()">
+                        <option value="newest" selected="@(Model.SortOrder == "newest")">Newest</option>
+                        <option value="price_asc" selected="@(Model.SortOrder == "price_asc")">Price: Ascending</option>
+                        <option value="price_desc" selected="@(Model.SortOrder == "price_desc")">Price: Descending</option>
+                    </select>
+                </form>
+            </div>
+            <b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold; margin-right: 4px;">All @Model.VehiclesCount</b>
+            <span>favorite ads</span>
+        </div>
+    </h5>
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-info">@ViewBag.Message</div>
+    }
+    else
+    {
+        <ul class="ul_container">
+            @foreach (var vehicle in Model.Vehicles)
+            {
+                string currentPriceClass;
+                string previousPriceClass;
+                bool isVehicleNew = (vehicle.DateAdded.Date >= DateTime.UtcNow.Date.AddHours(-12));
+
+                if (vehicle.PreviousPrice.Price != 0)
+                {
+                    currentPriceClass = vehicle.CurrentPrice.Price < vehicle.PreviousPrice?.Price ? "text-success" : "text-danger";
+                    previousPriceClass = vehicle.CurrentPrice.Price < vehicle.PreviousPrice?.Price ? "text-danger" : "text-success";
+                }
+                else
+                {
+                    currentPriceClass = "text-success";
+                    previousPriceClass = "text-danger";
+                }
+
+                string vehicleName = vehicle.Name.Length > 60 ? vehicle.Name.Substring(0, 60) + "..." : vehicle.Name;
+
+                <li class="new_item">
+                    @Html.Raw(isVehicleNew ? "<img src=\"/images/new.png\" class=\"new-flag\" />" : "")
+                    <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
+                        <div class="item_pic">
+                            <img class="index-image" src="@vehicle.ImageUrl"
+                                 title="@vehicle.Name" />
+                        </div>
+                        <div class="name_and_price">
+                            <div class="item_text">
+                                @vehicleName
+                            </div>
+                            <div class="price_container">
+                                <p class="item_current">
+                                    Current price:
+                                    <span class="item_current_price @currentPriceClass">@vehicle.CurrentPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
+                                    <span class="item_current_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
+                                </p>
+                                <p class="item_previous">
+                                    Previous price:
+                                    <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
+                                    <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
+                                    <span class="favorite-icon" data-vehicle-id="@vehicle.Id" onclick="toggleFavorite(this)">
+                                        <i class="@(vehicle.Favorite ? "fa-solid fa-heart" : "fa-regular fa-heart")" title="@(vehicle.Favorite ? "Remove from Favorite" : "Add to Favorite")"></i>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+    <partial name="_PagingPartialFavorites" model="@Model" />
+}
