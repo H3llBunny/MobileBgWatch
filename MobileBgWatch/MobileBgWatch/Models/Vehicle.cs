@@ -39,5 +39,7 @@ namespace MobileBgWatch.Models
         public List<string> ImageUrls { get; set; }
 
         public List<VehiclePrice> HistoricalPrices { get; set; }
+
+        public bool Favorite { get; set; }
     }
 }

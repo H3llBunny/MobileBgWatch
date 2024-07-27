@@ -86,12 +86,10 @@ li.new_item {
     position: relative;
     display: flex;
     flex-direction: column;
-    /*justify-content: space-around;*/
     width: 300px;
     height: 350px;
     margin: 4px;
     border: 2px solid #3d3d3d;
-    /*padding: 5px;*/
     box-sizing: border-box;
     background: #212121;
     overflow: hidden;
@@ -107,6 +105,43 @@ img.new-flag {
     background: 0 0;
 }
 
+.favorite-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 20px;
+    color: #58b551;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+    .favorite-icon:hover {
+        color: #00790e;
+    }
+
+i.fa-solid.fa-heart {
+    color: #58b551 !important;
+}
+
+div.favorite-icon-singlePage {
+    color: #58b551;
+    cursor: pointer;
+    font-size: 30px;
+    margin-bottom: 20px;
+    transition: color 0.3s;
+}
+
+#favIconSingle {
+    font-size: 30px;
+}
+
+#favIconText {
+    font-size: 20px;
+}
+
+div.favorite-icon-singlePage:hover {
+    color: #00790e;
+}
 
 a.no_underline {
     display: flex;
@@ -150,7 +185,6 @@ a.no_underline {
 .item_current {
     color: #b7b7b7;
     margin-bottom: 0px;
-    margin-left: 5px;
 }
 
 .item_current_price {
@@ -164,7 +198,6 @@ a.no_underline {
 .item_previous {
     color: #b7b7b7;
     margin-bottom: 0px;
-    margin-left: 5px;
 }
 
 .item_previous_price {
@@ -468,10 +501,10 @@ button.modal-prev, button.modal-next {
     cursor: pointer;
 }
 
-div #login-error ul li{
+div #login-error ul li {
     list-style-type: none;
 }
 
-div #privacy-content{
+div #privacy-content {
     margin-left: 30px;
 }

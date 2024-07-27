@@ -107,6 +107,9 @@
                                                 Previous price:
                                                 <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
                                                 <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
+                                                <span class="favorite-icon" data-vehicle-id="@vehicle.Id" onclick="toggleFavorite(this)">
+                                                    <i class="@(vehicle.Favorite ? "fa-solid fa-heart" : "fa-regular fa-heart")" title="@(vehicle.Favorite ? "Remove from Favorite" : "Add to Favorite")"></i>
+                                                </span>
                                             </p>
                                         </div>
                                     </div>

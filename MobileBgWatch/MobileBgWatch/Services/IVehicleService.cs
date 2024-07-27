@@ -26,5 +26,7 @@ namespace MobileBgWatch.Services
         Task<VehicleViewModel> GetVehicleByAdIdAsync(long vehicleAdId);
 
         Task DeleteVehiclesForSearchUrlAsync(string userId, string searchUrl);
+
+        Task UpdateFavorite(string vehicleId, bool favorite);
     }
 }

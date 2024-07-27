@@ -82,7 +82,8 @@ namespace MobileBgWatch.Services
                         DateAdded = v.DateAdded,
                         VehicleAdId = v.VehicleAdId,
                         CurrentPrice = v.CurrentPrice,
-                        PreviousPrice = v.PreviousPrice
+                        PreviousPrice = v.PreviousPrice,
+                        Favorite = v.Favorite
                     }).ToList()
                 };
 
@@ -150,7 +151,8 @@ namespace MobileBgWatch.Services
                 DateAdded = v.DateAdded,
                 VehicleAdId = v.VehicleAdId,
                 CurrentPrice = v.CurrentPrice,
-                PreviousPrice = v.PreviousPrice
+                PreviousPrice = v.PreviousPrice,
+                Favorite = v.Favorite
             });
 
             var query = this._vehiclesCollection.Find(filter);
@@ -183,13 +185,11 @@ namespace MobileBgWatch.Services
             {
                 var currentVehicleAdIds = currentVehicles.Select(cv => cv.VehicleAdId).ToList();
 
-                // Construct the filter to delete vehicles not present in the current list
                 var filter = Builders<Vehicle>.Filter.And(
                     Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, currentVehicles.FirstOrDefault()?.SearchUrl),
                     Builders<Vehicle>.Filter.Eq(v => v.UserId, currentVehicles.FirstOrDefault()?.UserId),
                     Builders<Vehicle>.Filter.Not(Builders<Vehicle>.Filter.In(v => v.VehicleAdId, currentVehicleAdIds)));
 
-                // Delete vehicles matching the filter
                 await this._vehiclesCollection.DeleteManyAsync(filter);
             }
             catch (Exception ex)
@@ -219,6 +219,19 @@ namespace MobileBgWatch.Services
         {
             var filter = Builders<Vehicle>.Filter.Eq(v => v.SearchUrl, searchUrl) & Builders<Vehicle>.Filter.Eq(v => v.UserId, userId);
             await this._vehiclesCollection.DeleteManyAsync(filter);
+        }
+
+        public async Task UpdateFavorite(string vehicleId, bool favorite)
+        {
+            var filter = Builders<Vehicle>.Filter.Eq(v => v.Id, vehicleId);
+            var update = Builders<Vehicle>.Update.Set(v => v.Favorite, favorite);
+
+            var result = await this._vehiclesCollection.UpdateOneAsync(filter, update);
+
+            if (result.ModifiedCount == 0)
+            {
+                throw new Exception("No vehicle was found with the provided ID.");
+            }
         }
     }
 }

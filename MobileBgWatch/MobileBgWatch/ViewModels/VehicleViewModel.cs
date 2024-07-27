@@ -4,6 +4,7 @@ namespace MobileBgWatch.ViewModels
 {
     public class VehicleViewModel
     {
+        public string Id { get; set; }
         public long VehicleAdId { get; set; }
 
         public string SearchUrl { get; set; }
@@ -25,5 +26,7 @@ namespace MobileBgWatch.ViewModels
         public List<string> ImageUrls { get; set; }
 
         public List<VehiclePrice> HistoricalPrices { get; set; }
+
+        public bool Favorite { get; set; }
     }
 }

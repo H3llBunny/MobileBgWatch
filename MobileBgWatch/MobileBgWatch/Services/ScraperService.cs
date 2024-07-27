@@ -191,6 +191,7 @@ namespace MobileBgWatch.Services
                         Location = location,
                         Specifications = specifications,
                         ImageUrls = imgUrls,
+                        Favorite = false
                     };
 
                     vehicleList.Add(vehicle);

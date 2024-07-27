@@ -17,5 +17,7 @@ namespace MobileBgWatch.ViewModels
         public VehiclePrice CurrentPrice { get; set; }
 
         public VehiclePrice PreviousPrice { get; set; }
+
+        public bool Favorite { get; set; }
     }
 }
