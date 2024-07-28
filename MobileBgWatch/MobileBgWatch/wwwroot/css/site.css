@@ -185,6 +185,7 @@ a.no_underline {
 .item_current {
     color: #b7b7b7;
     margin-bottom: 0px;
+    padding-left: 3px;
 }
 
 .item_current_price {
@@ -198,6 +199,7 @@ a.no_underline {
 .item_previous {
     color: #b7b7b7;
     margin-bottom: 0px;
+    padding-left: 3px;
 }
 
 .item_previous_price {
@@ -507,4 +509,17 @@ div #login-error ul li {
 
 div #privacy-content {
     margin-left: 30px;
+}
+
+.logo {
+    width: 7rem;
+}
+
+.logo-index {
+    padding-top: 20px;
+    width: 30rem;
+}
+
+.navbar-nav {
+    font-size: 25px;
 }
