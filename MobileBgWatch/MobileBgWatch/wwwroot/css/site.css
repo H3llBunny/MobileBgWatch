@@ -23,16 +23,45 @@ main {
     flex: 1;
 }
 
-.btn-primary {
-    background-color: #007acc;
+.btn.disabled {
+    background-color: #3d3d3d;
+    border: none;
 }
 
+.btn-primary {
+    background-color: #8d8d8d;
+    border-color: #8d8d8d;
+}
+
+    .btn-primary:hover {
+        background-color: #3d3d3d;
+        border-color: #8d8d8d;
+    }
+
+    .btn-primary:active {
+        background-color: #212121 !important;
+        border-color: #8d8d8d !important;
+        box-shadow: none !important;
+    }
+
+    .btn-primary:focus {
+        box-shadow: none;
+    }
+
 .btn-secondary {
-    background-color: #007acc;
+    background-color: #8d8d8d;
 }
 
     .btn-secondary:hover {
         background-color: #890606;
+    }
+
+    .btn-secondary:active {
+        box-shadow: none !important;
+    }
+
+    .btn-secondary:focus {
+        box-shadow: none !important;
     }
 
 #searchUrlh5 {
@@ -42,10 +71,13 @@ main {
 
 #searchUrlInput {
     background-color: #212121;
+    box-shadow: none;
+    border-color: #8d8d8d;
 }
 
 #submitButton {
-    background-color: #007acc;
+    background-color: #8d8d8d;
+    border-color: #8d8d8d;
 }
 
 .welcome-header {
@@ -522,4 +554,22 @@ div #privacy-content {
 
 .navbar-nav {
     font-size: 25px;
+}
+
+.page-link {
+    color: white;
+}
+
+.active > .page-link {
+    background-color: gray;
+    border-color: white;
+}
+
+a.page-link:hover {
+    color: gray;
+}
+
+a.page-link:focus {
+    color: white;
+    box-shadow: none;
 }
