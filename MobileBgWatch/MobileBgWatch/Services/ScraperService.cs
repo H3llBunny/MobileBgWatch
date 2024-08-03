@@ -10,11 +10,13 @@ namespace MobileBgWatch.Services
     {
         private IBrowsingContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IVehicleService _vehicleService;
 
-        public ScraperService(IBrowsingContext context, UserManager<ApplicationUser> userManager)
+        public ScraperService(IBrowsingContext context, UserManager<ApplicationUser> userManager, IVehicleService vehicleService)
         {
             this._context = context;
             this._userManager = userManager;
+            this._vehicleService = vehicleService;
         }
 
         public async Task<IEnumerable<string>> GetAllVehicleAdUrlsAsync(string searchUrl, string userId, bool shortScrape)
@@ -67,24 +69,29 @@ namespace MobileBgWatch.Services
                         continue;
                     }
 
-                    var vehicleAdLinks = currentPageDocument.QuerySelectorAll("div.photo div.big a");
+                    var vehicleAdDivs = currentPageDocument.QuerySelectorAll("div.item, div.item.TOP, div.item.VIP");
 
-                    foreach (var link in vehicleAdLinks)
+                    foreach (var div in vehicleAdDivs)
                     {
-                        string href = link.GetAttribute("href");
-                        string fullUrl = "https:" + href;
-
-                        if (shortScrape)
+                        var link = div.QuerySelector("div.photo div.big a");
+                        if (link != null)
                         {
-                            var user = await this._userManager.FindByIdAsync(userId);
-                            if (user.SearchUrls.Any(s => s.Url == searchUrl))
-                            {
-                                return vehicleUrls;
-                            }
-                            
-                        }
+                            string fullUrl = "https:" + link.GetAttribute("href");
 
-                        vehicleUrls.Add(fullUrl);
+                            if (shortScrape && !div.ClassList.Contains("TOP") && !div.ClassList.Contains("VIP"))
+                            {
+                                if (await this._vehicleService.CheckAdExistAsync(userId, fullUrl))
+                                {
+                                    return vehicleUrls;
+                                }
+
+                                vehicleUrls.Add(fullUrl);
+                            }
+                            else
+                            {
+                                vehicleUrls.Add(fullUrl);
+                            }
+                        }
                     }
                 }
 

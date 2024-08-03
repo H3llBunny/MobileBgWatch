@@ -32,5 +32,7 @@ namespace MobileBgWatch.Services
         Task<int> GetTotalFavoritesCountAsync(string userId);
 
         Task<IEnumerable<VehicleInListViewModel>> GetFavoties(string userId, int pageNumber, int VehiclesPerPage, string sortOrder);
+
+        Task<bool> CheckAdExistAsync(string userId, string url);
     }
 }

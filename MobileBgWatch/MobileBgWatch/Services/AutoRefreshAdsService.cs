@@ -76,10 +76,10 @@ namespace MobileBgWatch.Services
                             var newVehicles = await scraperService.CreateVehiclesListAsync(newUrls, user.Id, url.Url);
                             newVehicleAds.Add(newVehicles.ToList());
                             await vehicleService.AddVehicleAsync(newVehicles);
-
-                            await searchUrlService.UpdateLastRefreshByServiceAsync(user.Id, url.Url);
-                            await searchUrlService.UpdateRefreshCounterAsync(user.Id, url.Url);
                         }
+
+                        await searchUrlService.UpdateLastRefreshByServiceAsync(user.Id, url.Url);
+                        await searchUrlService.UpdateRefreshCounterAsync(user.Id, url.Url);
                     }
                 }
 

@@ -279,5 +279,16 @@ namespace MobileBgWatch.Services
 
             return vehicles;
         }
+
+        public async Task<bool> CheckAdExistAsync(string userId, string url)
+        {
+            var filter = Builders<Vehicle>.Filter.And(
+                Builders<Vehicle>.Filter.Eq(v => v.UserId, userId),
+                Builders<Vehicle>.Filter.Eq(v => v.Url, url));
+
+            var result = await this._vehiclesCollection.Find(filter).FirstOrDefaultAsync();
+
+            return result != null;
+        }
     }
 }
