@@ -544,12 +544,12 @@ div #privacy-content {
 }
 
 .logo {
-    width: 5rem;
+    width: 13rem;
 }
 
 .logo-index {
     padding-top: 20px;
-    width: 30rem;
+    width: 60rem;
 }
 
 .navbar-nav {
@@ -572,4 +572,11 @@ a.page-link:hover {
 a.page-link:focus {
     color: white;
     box-shadow: none;
+}
+
+.main-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
 }

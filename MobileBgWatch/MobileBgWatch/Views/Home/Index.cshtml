@@ -34,6 +34,19 @@
                 <button id="submitButton" class="btn btn-primary" type="submit" disabled>Add</button>
             </form>
         </div>
+
+        <script>
+            function checkInput() {
+                const inputField = document.getElementById("searchUrlInput");
+                const submitButton = document.getElementById("submitButton");
+                submitButton.disabled = inputField.value.trim() === '';
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                checkInput();
+            });
+        </script>
+
         @if (Model?.SearchUrls != null)
         {
             @foreach (var url in Model.SearchUrls)
@@ -135,12 +148,6 @@
 }
 
 <script>
-    function checkInput() {
-        const inputField = document.getElementById("searchUrlInput");
-        const submitButton = document.getElementById("submitButton");
-        submitButton.disabled = inputField.value.trim() === '';
-    }
-
     function formatTimeLeft(totalSeconds) {
         var minutes = Math.floor(totalSeconds / 60);
         var seconds = totalSeconds % 60;
@@ -161,47 +168,44 @@
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        checkInput();
+    restoreScrollPosition();
 
-        restoreScrollPosition();
+    document.querySelectorAll('.refresh-button').forEach(function (button) {
+        let timeLeft = parseInt(button.getAttribute('data-time-left'));
+        const timerElement = button.querySelector('.refresh-timer');
 
-        document.querySelectorAll('.refresh-button').forEach(function (button) {
-            let timeLeft = parseInt(button.getAttribute('data-time-left'));
-            const timerElement = button.querySelector('.refresh-timer');
-
-            if (timeLeft > 0) {
-                button.classList.add('disabled');
-                const interval = setInterval(function () {
-                    timeLeft--;
-                    timerElement.textContent = '(' + formatTimeLeft(timeLeft) + ')';
-                    if (timeLeft <= 0) {
-                        clearInterval(interval);
-                        button.classList.remove('disabled');
-                        if (timerElement) {
-                            timerElement.style.display = 'none';
-                        }
+        if (timeLeft > 0) {
+            button.classList.add('disabled');
+            const interval = setInterval(function () {
+                timeLeft--;
+                timerElement.textContent = '(' + formatTimeLeft(timeLeft) + ')';
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    button.classList.remove('disabled');
+                    if (timerElement) {
+                        timerElement.style.display = 'none';
                     }
-                }, 1000);
-            } else {
-                button.classList.remove('disabled');
-                if (timerElement) {
-                    timerElement.style.display = 'none';
                 }
+            }, 1000);
+        } else {
+            button.classList.remove('disabled');
+            if (timerElement) {
+                timerElement.style.display = 'none';
+            }
+        }
+    });
+
+    document.querySelectorAll('.delete-button').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            const url = button.getAttribute('data-url');
+            const confirmation = confirm('Are you sure you want to delete this link?');
+            if (confirmation) {
+                window.location.href = 'Home/DeleteUrl?searchUrl=' + encodeURIComponent(url);
             }
         });
-
-        document.querySelectorAll('.delete-button').forEach(function (button) {
-            button.addEventListener('click', function (event) {
-                event.preventDefault();
-                const url = button.getAttribute('data-url');
-                const confirmation = confirm('Are you sure you want to delete this link?');
-                if (confirmation) {
-                    window.location.href = 'Home/DeleteUrl?searchUrl=' + encodeURIComponent(url);
-                }
-            });
-        });
     });
+
 
     document.addEventListener('click', function (event) {
         const refreshButton = event.target.closest('.refresh-button');
