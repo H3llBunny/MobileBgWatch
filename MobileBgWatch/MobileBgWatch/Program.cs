@@ -64,6 +64,9 @@ namespace MobileBgWatch
             builder.Services.AddScoped<IScraperService, ScraperService>();
             builder.Services.AddScoped<IVehicleService, VehicleService>();
             builder.Services.AddScoped<ISearchUrlService, SearchUrlService>();
+            builder.Services.AddTransient<INotificationService, NotificationService>();
+
+            builder.Services.AddSignalR();
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -78,6 +81,8 @@ namespace MobileBgWatch
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

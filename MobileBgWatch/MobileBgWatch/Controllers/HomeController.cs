@@ -66,7 +66,9 @@ namespace MobileBgWatch.Controllers
                 return this.RedirectToAction(nameof(this.Index));
             }
 
-            if (await this._usersService.SearchUrlAlreadyExist(userId, searchUrl))
+            string url = this._scraperService.UpdateSortParameter(searchUrl);
+
+            if (await this._usersService.SearchUrlAlreadyExist(userId, url))
             {
                 this.TempData["ErrorMessage"] = "Search Url already exist.";
                 return this.RedirectToAction(nameof(this.Index));
@@ -74,10 +76,10 @@ namespace MobileBgWatch.Controllers
 
             try
             {
-                var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(searchUrl)).ToList();
-                var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, searchUrl);
+                var vehicleUrls = (await this._scraperService.GetAllVehicleAdUrlsAsync(url)).ToList();
+                var vehicleList = await this._scraperService.CreateVehiclesListAsync(vehicleUrls, userId, url);
                 await this._vehicleService.AddVehicleAsync(vehicleList);
-                await this._usersService.AddSearchUrlToUserAsync(userId, searchUrl);
+                await this._usersService.AddSearchUrlToUserAsync(userId, url);
                 this.TempData["SuccessMessage"] = "New search URL has been successfully added.";
             }
             catch (Exception ex)

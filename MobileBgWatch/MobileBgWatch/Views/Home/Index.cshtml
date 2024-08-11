@@ -26,11 +26,16 @@
         </div>
     }
 
+    <div id="notification" class="alert alert-success" style="display: none;" role="alert">
+        <span id="notificationMessage"></span>
+        <button id="refreshButton" class="btn btn-primary">Refresh</button>
+    </div>
+
     if (User?.Identity?.IsAuthenticated ?? false)
     {
         <div id="searchUrlBox" class="col-md-6">
             <form asp-action="AddSearchUrl" method="post" class="d-flex align-items-center">
-                <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Type your mobile.bg search url item link" oninput="checkInput()" />
+                <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Please enter your mobile.bg search URL here and remove any sort query parameters, if present." oninput="checkInput()" />
                 <button id="submitButton" class="btn btn-primary" type="submit" disabled>Add</button>
             </form>
         </div>
@@ -215,4 +220,29 @@
     });
 
     window.addEventListener('beforeunload', storeScrollPosition);
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationHub", {
+            transport: signalR.HttpTransportType.WebSockets |
+                       signalR.HttpTransportType.ServerSentEvents |
+                       signalR.HttpTransportType.LongPolling
+        })
+        .build();
+
+    connection.on("ReceiveNotification", (message) => {
+        showNotification(message);
+    });
+
+    connection.start().catch(err => console.error(err.toString()));
+
+    function showNotification(message) {
+        const notificationElement = document.getElementById("notification");
+        const notificationMessage = document.getElementById("notificationMessage");
+        notificationMessage.textContent = message;
+        notificationElement.style.display = "block";
+    }
+
+    document.getElementById("refreshButton").addEventListener("click", () => {
+        location.reload();
+    });
 </script>

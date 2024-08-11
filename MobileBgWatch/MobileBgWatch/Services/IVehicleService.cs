@@ -5,7 +5,7 @@ namespace MobileBgWatch.Services
 {
     public interface IVehicleService
     {
-        Task AddVehicleAsync(ICollection<Vehicle> vehicles);
+        Task<ICollection<Vehicle>> AddVehicleAsync(ICollection<Vehicle> vehicles);
 
         Task<SearchUrlsListViewModel> GetSearchUrlsListAsync(string userId, int? count = null);
 

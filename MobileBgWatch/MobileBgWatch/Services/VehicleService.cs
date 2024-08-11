@@ -22,7 +22,7 @@ namespace MobileBgWatch.Services
             this._mapper = mapper;
         }
 
-        public async Task AddVehicleAsync(ICollection<Vehicle> vehicles)
+        public async Task<ICollection<Vehicle>> AddVehicleAsync(ICollection<Vehicle> vehicles)
         {
             var removeIdentifiers = new List<long>();
 
@@ -48,7 +48,11 @@ namespace MobileBgWatch.Services
             if (vehicleList.Count > 0)
             {
                 await this._vehiclesCollection.InsertManyAsync(vehicleList);
+
+                return vehicleList;
             }
+
+            return vehicleList;
         }
 
         public async Task<SearchUrlsListViewModel> GetSearchUrlsListAsync(string userId, int? count = null)

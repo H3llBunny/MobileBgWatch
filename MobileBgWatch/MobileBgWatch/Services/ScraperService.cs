@@ -1,27 +1,26 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
-using Microsoft.AspNetCore.Identity;
 using MobileBgWatch.Models;
 using MongoDB.Driver;
+using System.Text.RegularExpressions;
 
 namespace MobileBgWatch.Services
 {
     public class ScraperService : IScraperService
     {
         private IBrowsingContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IVehicleService _vehicleService;
 
-        public ScraperService(IBrowsingContext context, UserManager<ApplicationUser> userManager, IVehicleService vehicleService)
+        public ScraperService(IBrowsingContext context, IVehicleService vehicleService)
         {
             this._context = context;
-            this._userManager = userManager;
             this._vehicleService = vehicleService;
         }
 
         public async Task<IEnumerable<string>> GetAllVehicleAdUrlsAsync(string searchUrl, string userId, bool shortScrape)
         {
             var vehicleUrls = new List<string>();
+
             string initialUrl = searchUrl;
 
             try
@@ -210,6 +209,29 @@ namespace MobileBgWatch.Services
             }
 
             return vehicleList;
+        }
+
+
+        public string UpdateSortParameter(string searchUrl)
+        {
+            string sortPattern = @"([?&])sort=\d+";
+            string replacement = "$1sort=6";
+
+            if (Regex.IsMatch(searchUrl, sortPattern))
+            {
+                return Regex.Replace(searchUrl, sortPattern, replacement);
+            }
+            else
+            {
+                if (searchUrl.Contains("?"))
+                {
+                    return searchUrl + "&sort=6";
+                }
+                else
+                {
+                    return searchUrl + "?sort=6";
+                }
+            }
         }
     }
 }

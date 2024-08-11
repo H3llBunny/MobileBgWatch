@@ -8,16 +8,19 @@ namespace MobileBgWatch.Services
         private readonly IMongoCollection<ApplicationUser> _userCollection;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<AutoRefreshAdsService> _logger;
+        private readonly INotificationService _notificationService;
 
         public AutoRefreshAdsService(
             IMongoCollection<ApplicationUser> userCollection,
             IServiceScopeFactory serviceScopeFactory,
-            ILogger<AutoRefreshAdsService> logger)
+            ILogger<AutoRefreshAdsService> logger,
+            INotificationService notificationService)
 
         {
             this._userCollection = userCollection;
             this._serviceScopeFactory = serviceScopeFactory;
             this._logger = logger;
+            this._notificationService = notificationService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -61,7 +64,13 @@ namespace MobileBgWatch.Services
                     {
                         var allUrls = (await scraperService.GetAllVehicleAdUrlsAsync(url.Url)).ToList();
                         var vehicleList = await scraperService.CreateVehiclesListAsync(allUrls, user.Id, url.Url);
-                        await vehicleService.AddVehicleAsync(vehicleList);
+                        var addedVehicles = (await vehicleService.AddVehicleAsync(vehicleList)).ToList();
+
+                        if(addedVehicles.Count > 0)
+                        {
+                            newVehicleAds.Add(addedVehicles);
+                        }
+
                         await vehicleService.DeletedSoldVehiclesAsync(vehicleList);
 
                         await searchUrlService.UpdateLastRefreshByServiceAsync(user.Id, url.Url);
@@ -74,13 +83,22 @@ namespace MobileBgWatch.Services
                         if (newUrls.Count > 0)
                         {
                             var newVehicles = await scraperService.CreateVehiclesListAsync(newUrls, user.Id, url.Url);
-                            newVehicleAds.Add(newVehicles.ToList());
-                            await vehicleService.AddVehicleAsync(newVehicles);
+                            var addedVehicles = (await vehicleService.AddVehicleAsync(newVehicles)).ToList();
+
+                            if (addedVehicles.Count > 0)
+                            {
+                                newVehicleAds.Add(addedVehicles);
+                            }
                         }
 
                         await searchUrlService.UpdateLastRefreshByServiceAsync(user.Id, url.Url);
                         await searchUrlService.UpdateRefreshCounterAsync(user.Id, url.Url);
                     }
+                }
+
+                if (newVehicleAds.Count > 0)
+                {
+                    await this._notificationService.SendNotificationAsync(user.Id, $"You have {newVehicleAds.Sum(v => v.Count)} new ads");
                 }
 
                 //TODO: implement emailService to send emails to users with newVehicleAds using SendGrid
