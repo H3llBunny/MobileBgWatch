@@ -8,7 +8,6 @@ namespace MobileBgWatch.Services
     public class VehicleService : IVehicleService
     {
         private readonly IMongoCollection<Vehicle> _vehiclesCollection;
-        private readonly MongoDbConfig config;
         private readonly IMongoCollection<ApplicationUser> _userCollection;
         private readonly IMapper _mapper;
 
@@ -17,7 +16,6 @@ namespace MobileBgWatch.Services
             var client = new MongoClient(config.ConnectionString);
             var database = client.GetDatabase(config.Database);
             this._vehiclesCollection = database.GetCollection<Vehicle>("Vehicles");
-            this.config = config;
             this._userCollection = userCollection;
             this._mapper = mapper;
         }

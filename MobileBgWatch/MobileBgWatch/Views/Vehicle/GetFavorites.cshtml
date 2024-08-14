@@ -100,5 +100,9 @@
             }
         </ul>
     }
-    <partial name="_PagingPartialFavorites" model="@Model" />
+
+    if (Model.VehiclesCount > 0)
+    {
+        <partial name="_PagingPartialFavorites" model="@Model" />
+    }
 }

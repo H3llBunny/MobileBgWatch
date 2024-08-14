@@ -5,12 +5,10 @@ namespace MobileBgWatch.Services
 {
     public class NotificationService : INotificationService
     {
-        private readonly ILogger<NotificationService> _logger;
         private readonly IHubContext<NotificationHub> _hubContext;
 
         public NotificationService(ILogger<NotificationService> logger, IHubContext<NotificationHub> hubContext)
         {
-            this._logger = logger;
             this._hubContext = hubContext;
         }
 

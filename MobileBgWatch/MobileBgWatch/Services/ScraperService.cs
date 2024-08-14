@@ -9,12 +9,10 @@ namespace MobileBgWatch.Services
     public class ScraperService : IScraperService
     {
         private IBrowsingContext _context;
-        private readonly IVehicleService _vehicleService;
 
         public ScraperService(IBrowsingContext context, IVehicleService vehicleService)
         {
             this._context = context;
-            this._vehicleService = vehicleService;
         }
 
         public async Task<IEnumerable<string>> GetAllVehicleAdUrlsAsync(string searchUrl, string userId, bool shortScrape)
@@ -25,6 +23,11 @@ namespace MobileBgWatch.Services
 
             try
             {
+                if (shortScrape)
+                {
+                    initialUrl = initialUrl.Replace("sort=6", "sort=7");
+                }
+
                 var initialDocument = await this._context.OpenAsync(initialUrl);
 
                 if (initialDocument == null)
@@ -72,25 +75,10 @@ namespace MobileBgWatch.Services
 
                     foreach (var div in vehicleAdDivs)
                     {
-                        var link = div.QuerySelector("div.photo div.big a");
-                        if (link != null)
-                        {
-                            string fullUrl = "https:" + link.GetAttribute("href");
+                        var link = div.QuerySelector("div.links a");
+                        string fullUrl = "https:" + link.GetAttribute("href");
 
-                            if (shortScrape && !div.ClassList.Contains("TOP") && !div.ClassList.Contains("VIP"))
-                            {
-                                if (await this._vehicleService.CheckAdExistAsync(userId, fullUrl))
-                                {
-                                    return vehicleUrls;
-                                }
-
-                                vehicleUrls.Add(fullUrl);
-                            }
-                            else
-                            {
-                                vehicleUrls.Add(fullUrl);
-                            }
-                        }
+                        vehicleUrls.Add(fullUrl);
                     }
                 }
 
