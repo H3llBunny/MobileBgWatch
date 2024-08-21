@@ -36,14 +36,14 @@ namespace MobileBgWatch.Services
                 }
 
                 int totalPages = 0;
-                var paginationElement = initialDocument.QuerySelector("div.pagination a.saveSlink.gray");
+                var paginationElement = initialDocument.QuerySelector("div.pagination div.a.saveSlink.gray");
                 if (paginationElement != null)
                 {
                     int.TryParse(paginationElement.TextContent.Trim(), out totalPages);
                 }
                 else
                 {
-                    var paginationElements = initialDocument.QuerySelectorAll("div.pagination a.saveSlink");
+                    var paginationElements = initialDocument.QuerySelectorAll("div.pagination .saveSlink");
                     if (paginationElements != null && paginationElements.Any())
                     {
                         totalPages = paginationElements
