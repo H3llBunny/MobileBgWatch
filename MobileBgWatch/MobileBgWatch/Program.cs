@@ -1,5 +1,6 @@
 using AngleSharp;
 using Microsoft.AspNetCore.Identity;
+using MobileBgWatch.Hubs;
 using MobileBgWatch.Models;
 using MobileBgWatch.Profiles;
 using MobileBgWatch.Services;

@@ -7,84 +7,84 @@
 @{
     @if (TempData["ErrorMessage"] != null)
     {
-            <div class="alert alert-danger col-md-6">
-                @TempData["ErrorMessage"]
-            </div>
+        <div class="alert alert-danger col-md-6">
+            @TempData["ErrorMessage"]
+        </div>
     }
 
     @if (TempData["LimitMessage"] != null)
     {
-            <div class="alert alert-warning col-md-6">
-                @TempData["LimitMessage"]
-            </div>
+        <div class="alert alert-warning col-md-6">
+            @TempData["LimitMessage"]
+        </div>
     }
 
     @if (TempData["SuccessMessage"] != null)
     {
-            <div class="alert alert-success col-md-6">
-                @TempData["SuccessMessage"]
-            </div>
+        <div class="alert alert-success col-md-6">
+            @TempData["SuccessMessage"]
+        </div>
     }
 
-        <div id="notification" class="alert alert-success" style="display: none;" role="alert">
-            <span id="notificationMessage"></span>
-            <button id="refreshButton" class="btn btn-primary">Refresh</button>
-        </div>
+    <div id="notification" class="alert alert-success" style="display: none;" role="alert">
+        <span id="notificationMessage"></span>
+        <button id="refreshButton" class="btn btn-primary">Refresh</button>
+    </div>
 
     if (User?.Identity?.IsAuthenticated ?? false)
     {
-            <div id="searchUrlBox" class="col-md-6">
-                <form asp-action="AddSearchUrl" method="post" class="d-flex align-items-center">
-                    <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Please enter your mobile.bg search URL here and remove any sort query parameters, if present." oninput="checkInput()" />
-                    <button id="submitButton" class="btn btn-primary" type="submit" disabled>Add</button>
-                </form>
-            </div>
+        <div id="searchUrlBox" class="col-md-6">
+            <form asp-action="AddSearchUrl" method="post" class="d-flex align-items-center">
+                <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Please enter your mobile.bg search URL here and remove any sort query parameters, if present." oninput="checkInput()" />
+                <button id="submitButton" class="btn btn-primary" type="submit" disabled>Add</button>
+            </form>
+        </div>
 
-            <script>
-                function checkInput() {
-                    const inputField = document.getElementById("searchUrlInput");
-                    const submitButton = document.getElementById("submitButton");
-                    submitButton.disabled = inputField.value.trim() === '';
-                }
+        <script>
+            function checkInput() {
+                const inputField = document.getElementById("searchUrlInput");
+                const submitButton = document.getElementById("submitButton");
+                submitButton.disabled = inputField.value.trim() === '';
+            }
 
-                document.addEventListener("DOMContentLoaded", function () {
-                    checkInput();
-                });
-            </script>
+            document.addEventListener("DOMContentLoaded", function () {
+                checkInput();
+            });
+        </script>
 
-    @if (Model?.SearchUrls != null)
+        @if (Model?.SearchUrls != null)
         {
-    @foreach (var url in Model.SearchUrls)
+            @foreach (var url in Model.SearchUrls)
             {
-                    <h5 id="searchUrlh5">
-                        @{
+                <h5 id="searchUrlh5">
+                    @{
                         var now = DateTime.UtcNow;
                         var nextRefreshTime = url.LastRefresh.AddMinutes(15);
                         var timeLeft = (nextRefreshTime - now).TotalSeconds;
                         var canRefresh = timeLeft <= 0;
-                        }
+                    }
 
-                        <a class="btn btn-primary refresh-button @((canRefresh ? "" : "disabled"))" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()" data-can-refresh="@canRefresh" data-time-left="@((int)timeLeft)">
-                            Refresh
-                            @if (!canRefresh)
+                    <a class="btn btn-primary refresh-button @((canRefresh ? "" : "disabled"))" asp-action="RefreshAds" asp-route-searchUrl="@url.SearchUrl.ToString()" data-can-refresh="@canRefresh" data-time-left="@((int)timeLeft)">
+                        Refresh
+                        @if (!canRefresh)
                         {
-                                <span class="refresh-timer" data-time-left="@((int)timeLeft)">(@TimeSpan.FromSeconds((int)timeLeft).ToString("mm\\:ss"))</span>
+                            <span class="refresh-timer" data-time-left="@((int)timeLeft)">(@TimeSpan.FromSeconds((int)timeLeft).ToString("mm\\:ss"))</span>
                         }
-                        </a>
-                        <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
-                        <a class="btn btn-secondary delete-button" href="#" data-url="@url.SearchUrl.ToString()">Delete Link</a>
-                        <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
-                        <b style="font-size: 13px;">@url.SearchUrl</b>
-                    </h5>
-    @if (ViewBag.Message != null)
+                    </a>
+                    <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
+                    <a class="btn btn-secondary delete-button" href="#" data-url="@url.SearchUrl.ToString()">Delete Link</a>
+                    <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
+                    <b style="font-size: 13px;">@url.SearchUrl</b>
+                </h5>
+                @if (ViewBag.Message != null)
                 {
-                        <div class="alert alert-info">@ViewBag.Message</div>
+                    <div class="alert alert-info">@ViewBag.Message</div>
                 }
                 else
                 {
 
-                        <ul class="ul_container">
-                            @foreach (var vehicle in url.Vehicles)
+                    <ul class="ul_container">
+                        @foreach (var vehicle in url.Vehicles)
                         {
 
                             string currentPriceClass;
@@ -104,51 +104,51 @@
 
                             string vehicleName = vehicle.Name.Length > 60 ? vehicle.Name.Substring(0, 60) + "..." : vehicle.Name;
 
-                                <li class="new_item">
-                                    @Html.Raw(isVehicleNew ? "<img src=\"/images/new.png\" class=\"new-flag\" />" : "")
-                                    <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
-                                        <div class="item_pic">
-                                            <img class="index-image" src="@vehicle.ImageUrl"
-                                                 title="@vehicle.Name" />
+                            <li class="new_item">
+                                @Html.Raw(isVehicleNew ? "<img src=\"/images/new.png\" class=\"new-flag\" />" : "")
+                                <a class="no_underline" asp-controller="Vehicle" asp-action="GetVehicleAd" asp-route-vehicleAdId="@vehicle.VehicleAdId">
+                                    <div class="item_pic">
+                                        <img class="index-image" src="@vehicle.ImageUrl"
+                                             title="@vehicle.Name" />
+                                    </div>
+                                    <div class="name_and_price">
+                                        <div class="item_text">
+                                            @vehicleName
                                         </div>
-                                        <div class="name_and_price">
-                                            <div class="item_text">
-                                                @vehicleName
-                                            </div>
-                                            <div class="price_container">
-                                                <p class="item_current">
-                                                    Current price:
-                                                    <span class="item_current_price @currentPriceClass">@vehicle.CurrentPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
-                                                    <span class="item_current_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
-                                                </p>
-                                                <p class="item_previous">
-                                                    Previous price:
-                                                    <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
-                                                    <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
-                                                    <span class="favorite-icon" data-vehicle-id="@vehicle.Id" onclick="toggleFavorite(this)">
-                                                        <i class="@(vehicle.Favorite ? "fa-solid fa-heart" : "fa-regular fa-heart")" title="@(vehicle.Favorite ? "Remove from Favorite" : "Add to Favorite")"></i>
-                                                    </span>
-                                                </p>
-                                            </div>
+                                        <div class="price_container">
+                                            <p class="item_current">
+                                                Current price:
+                                                <span class="item_current_price @currentPriceClass">@vehicle.CurrentPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
+                                                <span class="item_current_currency @currentPriceClass">@vehicle.CurrentPrice.Currency</span>
+                                            </p>
+                                            <p class="item_previous">
+                                                Previous price:
+                                                <span class="item_previous_price @previousPriceClass">@vehicle.PreviousPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
+                                                <span class="item_previous_currency @previousPriceClass">@vehicle.PreviousPrice.Currency</span>
+                                                <span class="favorite-icon" data-vehicle-id="@vehicle.Id" onclick="toggleFavorite(this)">
+                                                    <i class="@(vehicle.Favorite ? "fa-solid fa-heart" : "fa-regular fa-heart")" title="@(vehicle.Favorite ? "Remove from Favorite" : "Add to Favorite")"></i>
+                                                </span>
+                                            </p>
                                         </div>
-                                    </a>
-                                </li>
+                                    </div>
+                                </a>
+                            </li>
                         }
-                        </ul>
+                    </ul>
                 }
             }
         }
     }
     else
     {
-            <div class="main-div">
-                <div class="text-center">
-                    <h2 class="welcome-header">Welcome to MobileBgWatch!</h2>
-                    <p></p>
-                    <h4>A simple web app that helps you monitor specific searches from mobile.bg.</h4>
-                    <img class="logo-index" src="~/images/logo.png" />
-                </div>
+        <div class="main-div">
+            <div class="text-center">
+                <h2 class="welcome-header">Welcome to MobileBgWatch!</h2>
+                <p></p>
+                <h4>A simple web app that helps you monitor specific searches from mobile.bg.</h4>
+                <img class="logo-index" src="~/images/logo.png" />
             </div>
+        </div>
     }
 }
 
@@ -221,31 +221,33 @@
 
     window.addEventListener('beforeunload', storeScrollPosition);
 
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/notificationHub", {
-            transport: signalR.HttpTransportType.WebSockets |
-                       signalR.HttpTransportType.ServerSentEvents |
-                       signalR.HttpTransportType.LongPolling
-        })
-        .build();
+    document.addEventListener("DOMContentLoaded", function () {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/notificationHub", {
+                transport: signalR.HttpTransportType.WebSockets |
+                    signalR.HttpTransportType.ServerSentEvents |
+                    signalR.HttpTransportType.LongPolling
+            })
+            .build();
 
-    connection.on("ReceiveNotification", (message) => {
-        showNotification(message);
-    });
+        connection.on("ReceiveNotification", (message) => {
+            showNotification(message);
+        });
 
-    connection.start().catch(err => {
-        console.error(err.toString());
-        setTimeout(() => connection.start().catch(err => console.error(err.toString())), 5000);
-    });
+        connection.start().catch(err => {
+            console.error(err.toString());
+            setTimeout(() => connection.start().catch(err => console.error(err.toString())), 5000);
+        });
 
-    function showNotification(message) {
-        const notificationElement = document.getElementById("notification");
-        const notificationMessage = document.getElementById("notificationMessage");
-        notificationMessage.textContent = message;
-        notificationElement.style.display = "block";
-    }
+        function showNotification(message) {
+            const notificationElement = document.getElementById("notification");
+            const notificationMessage = document.getElementById("notificationMessage");
+            notificationMessage.textContent = message;
+            notificationElement.style.display = "block";
+        }
 
-    document.getElementById("refreshButton").addEventListener("click", () => {
-        location.reload();
-    });
+        document.getElementById("refreshButton").addEventListener("click", () => {
+            location.reload();
+        });
+    })
 </script>

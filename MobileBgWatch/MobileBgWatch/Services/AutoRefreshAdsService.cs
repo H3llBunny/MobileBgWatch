@@ -25,6 +25,8 @@ namespace MobileBgWatch.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await Task.Delay(TimeSpan.FromSeconds(20), stoppingToken);
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 try

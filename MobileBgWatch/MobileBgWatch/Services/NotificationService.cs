@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using MobileBgWatch.Models;
+using MobileBgWatch.Hubs;
 
 namespace MobileBgWatch.Services
 {
@@ -7,14 +7,17 @@ namespace MobileBgWatch.Services
     {
         private readonly IHubContext<NotificationHub> _hubContext;
 
-        public NotificationService(ILogger<NotificationService> logger, IHubContext<NotificationHub> hubContext)
+        public NotificationService(IHubContext<NotificationHub> hubContext)
         {
             this._hubContext = hubContext;
         }
 
         public async Task SendNotificationAsync(string userId, string message)
         {
-            await this._hubContext.Clients.User(userId).SendAsync("ReceiveNotification", message);
+            if (NotificationHub.IsUserConnected(userId))
+            {
+                await this._hubContext.Clients.User(userId).SendAsync("ReceiveNotification", message);
+            }
         }
     }
 }
