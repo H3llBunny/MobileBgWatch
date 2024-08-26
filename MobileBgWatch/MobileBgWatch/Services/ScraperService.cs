@@ -54,7 +54,7 @@ namespace MobileBgWatch.Services
                     }
                 }
 
-                if (totalPages < 1)
+                if (totalPages < 1 && !shortScrape)
                 {
                     throw new Exception("No pages found. Please ensure the URL is valid and try again.");
                 }
