@@ -66,6 +66,8 @@ namespace MobileBgWatch
             builder.Services.AddScoped<IVehicleService, VehicleService>();
             builder.Services.AddScoped<ISearchUrlService, SearchUrlService>();
             builder.Services.AddTransient<INotificationService, NotificationService>();
+            builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection("SendGridOptions"));
+            builder.Services.AddTransient<IEmailService, EmailService>();
 
             builder.Services.AddSignalR();
 

@@ -9,13 +9,21 @@ namespace MobileBgWatch.Hubs
 
         public override Task OnConnectedAsync()
         {
-            _connectedUsers.TryAdd(Context.UserIdentifier, Context.ConnectionId);
+            if (!string.IsNullOrEmpty(Context.UserIdentifier))
+            {
+                _connectedUsers.TryAdd(Context.UserIdentifier, Context.ConnectionId);
+            }
+
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            _connectedUsers.TryRemove(Context.UserIdentifier, out _);
+            if (!string.IsNullOrEmpty(Context.UserIdentifier))
+            {
+                _connectedUsers.TryRemove(Context.UserIdentifier, out _);
+            }
+
             return base.OnDisconnectedAsync(exception);
         }
 

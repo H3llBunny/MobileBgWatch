@@ -68,6 +68,10 @@ ScaffoldingReadMe.txt
 # StyleCop
 StyleCopReport.xml
 
+# App settings
+appsettings.json
+appsettings.*.json
+
 # Files built by Visual Studio
 *_i.c
 *_p.c
@@ -396,3 +400,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/MobileBgWatch/MobileBgWatch/appsettings.json

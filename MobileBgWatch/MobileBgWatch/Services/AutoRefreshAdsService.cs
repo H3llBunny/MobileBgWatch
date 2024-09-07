@@ -1,5 +1,6 @@
 ﻿using MobileBgWatch.Models;
 using MongoDB.Driver;
+using SendGrid.Helpers.Mail.Model;
 
 namespace MobileBgWatch.Services
 {
@@ -9,18 +10,21 @@ namespace MobileBgWatch.Services
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<AutoRefreshAdsService> _logger;
         private readonly INotificationService _notificationService;
+        private readonly IEmailService _emailService;
 
         public AutoRefreshAdsService(
             IMongoCollection<ApplicationUser> userCollection,
             IServiceScopeFactory serviceScopeFactory,
             ILogger<AutoRefreshAdsService> logger,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IEmailService emailService)
 
         {
             this._userCollection = userCollection;
             this._serviceScopeFactory = serviceScopeFactory;
             this._logger = logger;
             this._notificationService = notificationService;
+            this._emailService = emailService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -100,10 +104,14 @@ namespace MobileBgWatch.Services
 
                 if (newVehicleAds.Count > 0)
                 {
-                    await this._notificationService.SendNotificationAsync(user.Id, $"You have {newVehicleAds.Sum(v => v.Count)} new ads");
-                }
+                    var newAdsCount = newVehicleAds.Sum(v => v.Count);
+                    var notificationMessage = $"You have {newAdsCount} new ads";
+                    var subject = $"You have {newAdsCount} new ads!";
 
-                //TODO: implement emailService to send emails to users with newVehicleAds using SendGrid
+                    await this._notificationService.SendNotificationAsync(user.Id, notificationMessage);
+
+                    await _emailService.SendEmailAsync(user.Email, subject, newVehicleAds);
+                }
             }
         }
     }
