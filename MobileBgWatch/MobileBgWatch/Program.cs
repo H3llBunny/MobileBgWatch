@@ -59,6 +59,14 @@ namespace MobileBgWatch
                 return database.GetCollection<ApplicationUser>("Users");
             });
 
+            builder.Services.AddSingleton<IMongoCollection<UserForEmailing>>(sp =>
+            {
+                var mongoDbConfig = sp.GetRequiredService<MongoDbConfig>();
+                var client = new MongoClient(mongoDbConfig.ConnectionString);
+                var database = client.GetDatabase(mongoDbConfig.Database);
+                return database.GetCollection<UserForEmailing>("UsersForEmailing");
+            });
+
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             builder.Services.AddScoped<IUsersService, UsersService>();

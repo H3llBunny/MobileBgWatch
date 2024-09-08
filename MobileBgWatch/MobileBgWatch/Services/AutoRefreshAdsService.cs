@@ -110,7 +110,7 @@ namespace MobileBgWatch.Services
 
                     await this._notificationService.SendNotificationAsync(user.Id, notificationMessage);
 
-                    await _emailService.SendEmailAsync(user.Email, subject, newVehicleAds);
+                    //await _emailService.SendEmailAsync(user.Email, subject, newVehicleAds);
                 }
             }
         }

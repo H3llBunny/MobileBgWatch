@@ -9,7 +9,10 @@ namespace MobileBgWatch.Models
         public ApplicationUser()
         {
             this.SearchUrls = new List<SearchUrl>();
+            this.ReceiveEmails = false;
         }
+
+        public bool ReceiveEmails { get; set; }
 
         public ICollection<SearchUrl> SearchUrls { get; set; }
     }
