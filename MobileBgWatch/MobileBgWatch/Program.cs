@@ -5,6 +5,7 @@ using MobileBgWatch.Models;
 using MobileBgWatch.Profiles;
 using MobileBgWatch.Services;
 using MongoDB.Driver;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MobileBgWatch
 {
@@ -76,6 +77,7 @@ namespace MobileBgWatch
             builder.Services.AddTransient<INotificationService, NotificationService>();
             builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection("SendGridOptions"));
             builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddScoped<IReceiveEmailsService, ReceiveEmailsService>();
 
             builder.Services.AddSignalR();
 

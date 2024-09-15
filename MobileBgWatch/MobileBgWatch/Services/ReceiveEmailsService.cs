@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 namespace MobileBgWatch.Services
 {
-    public class ReceiveEmailsService
+    public class ReceiveEmailsService : IReceiveEmailsService
     {
         private readonly IMongoCollection<ApplicationUser> _usersCollection;
         private readonly IMongoCollection<UserForEmailing> _usersForEmailing;
@@ -14,7 +14,14 @@ namespace MobileBgWatch.Services
             this._usersForEmailing = usersForEmailing;
         }
 
-        public async Task RecieveEmails(string userId, bool receiveEmails)
+        public async Task<bool> GetReceiveEmailsStatusAsync(string userId)
+        {
+            var user = await this._usersCollection.Find(u => u.Id == userId).FirstOrDefaultAsync();
+
+            return user.ReceiveEmails;
+        }
+
+        public async Task ToggleReceiveEmailsAsync(string userId, bool receiveEmails)
         {
             var user = await this._usersCollection.Find(u => u.Id == userId).FirstOrDefaultAsync();
 
@@ -42,7 +49,20 @@ namespace MobileBgWatch.Services
             }
             else
             {
-                await this._usersForEmailing.FindOneAndDeleteAsync(u => u.UserId == userId);
+                try
+                {
+                    var filter = Builders<UserForEmailing>.Filter.Eq(u => u.UserId, userId);
+                    var result = await this._usersForEmailing.FindOneAndDeleteAsync(filter);
+                    if (result == null)
+                    {
+                        throw new Exception("Document not found in usersForEmailing collection");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+               
             }
         }
     }

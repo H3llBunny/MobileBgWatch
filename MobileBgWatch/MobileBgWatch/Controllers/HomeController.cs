@@ -15,14 +15,21 @@ namespace MobileBgWatch.Controllers
         private readonly IScraperService _scraperService;
         private readonly IVehicleService _vehicleService;
         private readonly ISearchUrlService _searchUrlService;
+        private readonly IReceiveEmailsService _receiveEmailsService;
 
-        public HomeController(ILogger<HomeController> logger, IUsersService usersService, IScraperService scraperService, IVehicleService vehicleService, ISearchUrlService searchUrlService)
+        public HomeController(ILogger<HomeController> logger, 
+            IUsersService usersService, 
+            IScraperService scraperService, 
+            IVehicleService vehicleService, 
+            ISearchUrlService searchUrlService,
+            IReceiveEmailsService receiveEmailsService)
         {
             _logger = logger;
             this._usersService = usersService;
             this._scraperService = scraperService;
             this._vehicleService = vehicleService;
             this._searchUrlService = searchUrlService;
+            this._receiveEmailsService = receiveEmailsService;
         }
 
         public async Task<IActionResult> Index()
@@ -33,6 +40,9 @@ namespace MobileBgWatch.Controllers
             }
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            bool receiveEmails = await this._receiveEmailsService.GetReceiveEmailsStatusAsync(userId);
+            ViewBag.ReceiveEmails = receiveEmails;
+
             SearchUrlsListViewModel searchUrlsViewModel = await this._vehicleService.GetSearchUrlsListAsync(userId, 40);
 
             return this.View(searchUrlsViewModel);
@@ -156,6 +166,21 @@ namespace MobileBgWatch.Controllers
             }
 
             return this.RedirectToAction(nameof(this.Index));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleEmailNotifications([FromBody] ToggleEmailViewModel model)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                await this._receiveEmailsService.ToggleReceiveEmailsAsync(userId, model.ReceiveEmails);
+                return Ok();
+            }
+
+            return Unauthorized();
         }
     }
 }

@@ -40,6 +40,10 @@
                                 if (User?.Identity?.IsAuthenticated ?? false)
                                 {
                                         <li class="nav-item">
+                                        <label class="switch" style="color: gray; font-size: 20px; padding-right: 15px;">Receive Emails
+                                            <input type="checkbox" id="emailSwitch" style="height: 18px; width: 18px;" onchange="toggleEmailNotifications(this)" @(ViewBag.ReceiveEmails ? "checked" : "") />
+                                            <span class="slider round"></span>
+                                        </label>
                                             <a style="text-decoration: none; color: gray; font-size: 20px;" asp-controller="User" asp-action="ChangePassword">Welcome: @User.Identity.Name</a>
                                             <a asp-controller="User" asp-action="Logout" class="btn btn-secondary">Logout</a>
                                         </li>
@@ -59,6 +63,11 @@
                 </div>
             </nav>
         </header>
+
+        <form id="antiForgeryForm">
+            @Html.AntiForgeryToken()
+        </form>
+
         <div class="renderBody">
             <partial name="_CookieConsentPartial">
             <main role="main" class="pb-3">
@@ -103,6 +112,29 @@
                 });
             }
         });
+
+        function toggleEmailNotifications(checkbox) {
+            const isChecked = checkbox.checked;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch('/Home/ToggleEmailNotifications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ receiveEmails: isChecked })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    alert("Error updating email notifications.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occured.');
+            });
+        }
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

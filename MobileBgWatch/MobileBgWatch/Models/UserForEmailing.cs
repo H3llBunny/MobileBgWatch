@@ -1,4 +1,5 @@
-﻿using MongoDbGenericRepository.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDbGenericRepository.Attributes;
 
 namespace MobileBgWatch.Models
 {
@@ -9,6 +10,9 @@ namespace MobileBgWatch.Models
         {
             this.NewVehicles = new List<Vehicle>();
         }
+
+        [BsonId]
+        public Object Id { get; set; }
 
         public string UserId { get; set; }
 
