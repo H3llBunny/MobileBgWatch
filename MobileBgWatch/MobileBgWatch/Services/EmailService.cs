@@ -19,10 +19,9 @@ namespace MobileBgWatch.Services
             _logger = logger;
         }
 
-        public async Task SendEmailAsync(string email, string subject, List<List<Vehicle>> newVehicleAds)
+        public async Task SendEmailAsync(string email, string subject, List<Vehicle> newVehicleAds)
         {
-            var vehicles = newVehicleAds.SelectMany(list => list).ToList();
-            var htmlContent = GenerateEmailHtml(vehicles);
+            var htmlContent = GenerateEmailHtml(newVehicleAds);
 
             var msg = new SendGridMessage()
             {

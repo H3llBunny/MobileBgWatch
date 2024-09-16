@@ -11,13 +11,15 @@ namespace MobileBgWatch.Services
         private readonly ILogger<AutoRefreshAdsService> _logger;
         private readonly INotificationService _notificationService;
         private readonly IEmailService _emailService;
+        private readonly IMongoCollection<UserForEmailing> _usersForEmailing;
 
         public AutoRefreshAdsService(
             IMongoCollection<ApplicationUser> userCollection,
             IServiceScopeFactory serviceScopeFactory,
             ILogger<AutoRefreshAdsService> logger,
             INotificationService notificationService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IMongoCollection<UserForEmailing> usersForEmailing)
 
         {
             this._userCollection = userCollection;
@@ -25,6 +27,7 @@ namespace MobileBgWatch.Services
             this._logger = logger;
             this._notificationService = notificationService;
             this._emailService = emailService;
+            this._usersForEmailing = usersForEmailing;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -63,6 +66,7 @@ namespace MobileBgWatch.Services
             foreach (var user in users)
             {
                 var newVehicleAds = new List<List<Vehicle>>();
+                bool sendEmail = false;
 
                 foreach (var url in user?.SearchUrls)
                 {
@@ -72,7 +76,7 @@ namespace MobileBgWatch.Services
                         var vehicleList = await scraperService.CreateVehiclesListAsync(allUrls, user.Id, url.Url);
                         var addedVehicles = (await vehicleService.AddVehicleAsync(vehicleList)).ToList();
 
-                        if(addedVehicles.Count > 0)
+                        if (addedVehicles.Count > 0)
                         {
                             newVehicleAds.Add(addedVehicles);
                         }
@@ -81,6 +85,7 @@ namespace MobileBgWatch.Services
 
                         await searchUrlService.UpdateLastRefreshByServiceAsync(user.Id, url.Url);
                         await searchUrlService.ResetRefreshCounterAsync(user.Id, url.Url);
+                        sendEmail = true;
                     }
                     else if (url.RefreshCounter < 3 && (DateTime.UtcNow - url.LastRefreshByService).TotalMinutes >= 15)
                     {
@@ -110,7 +115,31 @@ namespace MobileBgWatch.Services
 
                     await this._notificationService.SendNotificationAsync(user.Id, notificationMessage);
 
-                    //await _emailService.SendEmailAsync(user.Email, subject, newVehicleAds);
+                    if (user.ReceiveEmails == true)
+                    {
+                        var flattenedVehicleList = newVehicleAds.SelectMany(v => v).ToList();
+                        var userForEmailing = await this._usersForEmailing.Find(u => u.UserId == user.Id).FirstOrDefaultAsync();
+
+                        if (userForEmailing != null)
+                        {
+                            var update = Builders<UserForEmailing>.Update.PushEach(u => u.NewVehicles, flattenedVehicleList);
+                            await this._usersForEmailing.UpdateOneAsync(u => u.UserId == user.Id, update);
+                        }
+                    }
+                }
+
+                if (user.ReceiveEmails == true && sendEmail == true)
+                {
+                    var userForEmailing = await this._usersForEmailing.Find(u => u.UserId == user.Id).FirstOrDefaultAsync();
+
+                    if (userForEmailing != null && userForEmailing.NewVehicles.Any())
+                    {
+                        var subject = $"You have {userForEmailing.NewVehicles.Count()} new ads";
+                        await this._emailService.SendEmailAsync(user.Email, subject, userForEmailing.NewVehicles);
+
+                        var clearVehicleAds = Builders<UserForEmailing>.Update.Set(u => u.NewVehicles, new List<Vehicle>());
+                        await this._usersForEmailing.UpdateOneAsync(u => u.UserId == user.Id, clearVehicleAds);
+                    }
                 }
             }
         }
