@@ -40,10 +40,6 @@
                                 if (User?.Identity?.IsAuthenticated ?? false)
                                 {
                                         <li class="nav-item">
-                                        <label class="switch" style="color: gray; font-size: 20px; padding-right: 15px;">Receive Emails
-                                            <input type="checkbox" id="emailSwitch" style="height: 18px; width: 18px;" onchange="toggleEmailNotifications(this)" @(ViewBag.ReceiveEmails ? "checked" : "") />
-                                            <span class="slider round"></span>
-                                        </label>
                                             <a style="text-decoration: none; color: gray; font-size: 20px;" asp-controller="User" asp-action="ChangePassword">Welcome: @User.Identity.Name</a>
                                             <a asp-controller="User" asp-action="Logout" class="btn btn-secondary">Logout</a>
                                         </li>
