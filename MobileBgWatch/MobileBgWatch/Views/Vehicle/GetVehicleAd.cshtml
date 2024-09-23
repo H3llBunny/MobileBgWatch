@@ -10,7 +10,7 @@
     <div class="col-md-6" id="left">
         <div class="carousel-container">
             <div class="carousel slide" id="carousel-main" data-bs-wrap="true">
-                <div class="border-top carousel-inner">
+                <div class="carousel-inner">
                     @Html.Raw(isVehicleNew ? "<img src=\"/images/new.png\" class=\"new-flag\" />" : "")
                     <div class="carousel-item active">
                         <img class="carousel-image" src="@Model.ImageUrls.FirstOrDefault()" onclick="showImageModal(this.src)" />
@@ -45,7 +45,7 @@
     </div>
 
     <div class="col-md-6" id="right">
-        <div class="border-top info-container custom-margin">
+        <div class="info-container custom-margin">
             <div class="adName">
                 @Model.Name
             </div>
@@ -220,7 +220,7 @@
                     text: '<span style="font-weight:bold; font-size: 16px">Date</span>',
                     margin: 10,
                     style: {
-                        color: '#E0E0E0'
+                        color: '#bc6c25'
                     }
                 },
                 labels: {
@@ -240,7 +240,7 @@
                 title: {
                     text: '<span style="font-weight:bold; font-size: 16px">Price</span>',
                     style: {
-                        color: '#E0E0E0'
+                        color: '#bc6c25'
                     }
                 },
                 labels: {
@@ -264,11 +264,11 @@
             series: [{
                 name: 'Price',
                 data: priceData,
-                color: '#00adef'
+                color: '#bc6c25'
             }],
             tooltip: {
                 formatter: function () {
-                    return `<br>${Highcharts.dateFormat('%e %b %Y', this.x)}<br><span style="color: #00adef">Price: </span>${this.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ${prices[0].Currency}`;
+                    return `<br>${Highcharts.dateFormat('%e %b %Y', this.x)}<br><strong style="color: #bc6c25">Price: </strong>${this.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ${prices[0].Currency}`;
                 }
             },
             credits: {

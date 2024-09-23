@@ -35,7 +35,7 @@
     {
         <div id="searchUrlBox" class="d-flex justify-content-between align-items-center flex-wrap" style="position: relative;">
             <form asp-action="AddSearchUrl" method="post" class="d-flex align-items-center flex-grow-1">
-                <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Please enter your mobile.bg search URL here and remove any sort query parameters, if present." oninput="checkInput()" style="width: 100%; max-width: 700px;" />
+                <input id="searchUrlInput" class="form-control me-2" type="text" name="searchUrl" placeholder="Please enter your mobile.bg search URL here" oninput="checkInput()" style="width: 100%; max-width: 700px;" />
                 <button id="submitButton" class="btn btn-primary" type="submit" disabled>Add</button>
             </form>
             <label class="switch" id="emailLabel" style="color: gray; font-size: 20px; padding-right: 2px; padding-left: 10px;">
@@ -78,7 +78,7 @@
                     </a>
                     <a class="btn btn-primary" asp-controller="AllAds" asp-action="GetAllAds" asp-route-searchUrl="@url.SearchUrl.ToString()">See all (@url.TotalAdsCount)</a>
                     <a class="btn btn-secondary delete-button" href="#" data-url="@url.SearchUrl.ToString()">Delete Link</a>
-                    <b>First </b><b class="vehicles_count text-success" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
+                    <b>First </b><b class="vehicles_count" style="font-size: 20px; font-weight: bold;">@url.Vehicles.Count()/@url.TotalAdsCount</b> vehicle ads for search link:
                     <b style="font-size: 13px;">@url.SearchUrl</b>
                 </h5>
                 @if (ViewBag.Message != null)
