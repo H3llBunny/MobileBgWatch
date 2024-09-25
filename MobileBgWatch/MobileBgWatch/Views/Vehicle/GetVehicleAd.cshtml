@@ -68,7 +68,7 @@
             }
             <div class="price_container_vehicle">
                 <div class="item_current">
-                    <i class="fa-solid fa-money-bill-wave @currentPriceClass"></i> Current price:
+                    <i class="fa-solid fa-money-bill-wave"></i> Current price:
                     <span class="item_current_price @currentPriceClass">@Model.CurrentPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
                     <span class="item_current_currency @currentPriceClass">@Model.CurrentPrice.Currency</span>
                     <span class="date-and-vat">
@@ -78,7 +78,7 @@
 
                 </div>
                 <div class="item_previous">
-                    <i class="fa-solid fa-money-bill-wave @previousPriceClass"></i> Previous price:
+                    <i class="fa-solid fa-money-bill-wave"></i> Previous price:
                     <span class="item_previous_price @previousPriceClass">@Model.PreviousPrice.Price.ToString("N0", CultureInfo.InvariantCulture)</span>
                     <span class="item_previous_currency @previousPriceClass">@Model.PreviousPrice.Currency</span>
                     <span class="date-and-vat">
