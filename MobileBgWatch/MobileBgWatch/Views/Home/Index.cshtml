@@ -45,18 +45,6 @@
             </label>
         </div>
 
-        <script>
-            function checkInput() {
-                const inputField = document.getElementById("searchUrlInput");
-                const submitButton = document.getElementById("submitButton");
-                submitButton.disabled = inputField.value.trim() === '';
-            }
-
-            document.addEventListener("DOMContentLoaded", function () {
-                checkInput();
-            });
-        </script>
-
         @if (Model?.SearchUrls != null)
         {
             @foreach (var url in Model.SearchUrls)
@@ -158,6 +146,16 @@
 }
 
 <script>
+    function checkInput() {
+        const inputField = document.getElementById("searchUrlInput");
+        const submitButton = document.getElementById("submitButton");
+        submitButton.disabled = inputField.value.trim() === '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        checkInput();
+    });
+
     function formatTimeLeft(totalSeconds) {
         var minutes = Math.floor(totalSeconds / 60);
         var seconds = totalSeconds % 60;
