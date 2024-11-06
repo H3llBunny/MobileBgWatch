@@ -5,7 +5,6 @@ using MobileBgWatch.Models;
 using MobileBgWatch.Profiles;
 using MobileBgWatch.Services;
 using MongoDB.Driver;
-using System.Security.Cryptography.X509Certificates;
 
 namespace MobileBgWatch
 {
