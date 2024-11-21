@@ -1,6 +1,5 @@
 ﻿using MobileBgWatch.Models;
 using MongoDB.Driver;
-using SendGrid.Helpers.Mail.Model;
 
 namespace MobileBgWatch.Services
 {

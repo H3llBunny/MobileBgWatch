@@ -20,6 +20,12 @@ namespace MobileBgWatch.Controllers
         [Authorize]
         public async Task<IActionResult> GetVehicleAd(long vehicleAdId)
         {
+            if (!this._vehicleService.DoesVehicleIdExist(vehicleAdId))
+            {
+                TempData["ErrorMessage"] = "Vehicle Id does not exist.";
+                return this.RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+
             var vehicleViewModel = await this._vehicleService.GetVehicleByAdIdAsync(vehicleAdId);
             return this.View(vehicleViewModel);
         }

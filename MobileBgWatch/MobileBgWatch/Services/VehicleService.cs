@@ -109,6 +109,12 @@ namespace MobileBgWatch.Services
                         && v.UserId == vehicle.UserId);
         }
 
+        public bool DoesVehicleIdExist(long vehicleId)
+        {
+            return this._vehiclesCollection.AsQueryable()
+                .Any(v => v.VehicleAdId == vehicleId);
+        }
+
         public async Task<bool> ChangeInPriceAsync(Vehicle vehicle)
         {
             var vehicleFromDb = await this._vehiclesCollection.Find(v => v.VehicleAdId == vehicle.VehicleAdId).FirstOrDefaultAsync();
