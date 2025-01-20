@@ -71,7 +71,7 @@ namespace MobileBgWatch.Services
                         continue;
                     }
 
-                    var vehicleAdDivs = currentPageDocument.QuerySelectorAll("div.item, div.item.TOP, div.item.VIP");
+                    var vehicleAdDivs = currentPageDocument.QuerySelectorAll("div.item:not(.fakti), div.item.TOP, div.item.VIP");
 
                     foreach (var div in vehicleAdDivs)
                     {
