@@ -23,14 +23,14 @@
                     icon.classList.add('fa-solid');
                     icon.title = "Remove from Favorite";
                     if (textSpan) {
-                        textSpan.textContent = "Remove from Favorite"
+                        textSpan.textContent = "Remove from Favorite";
                     }
                 } else {
                     icon.classList.remove('fa-solid');
                     icon.classList.add('fa-regular');
                     icon.title = "Add to Favorite";
                     if (textSpan) {
-                        textSpan.textContent = "Add to Favorite"
+                        textSpan.textContent = "Add to Favorite";
                     }
                 }
             } else {
