@@ -2,6 +2,7 @@
 using AngleSharp.Dom;
 using MobileBgWatch.Models;
 using MongoDB.Driver;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace MobileBgWatch.Services
@@ -121,23 +122,21 @@ namespace MobileBgWatch.Services
                         vatIncluded = vatCheck.Text() == "Цената е с включено ДДС" ? true : false;
                     }
 
-                    int price = 0;
-                    string currency = "N/A";
+                    decimal price = 0;
+                    string currency = "€";
                     var priceElement = document.QuerySelector("div.Price");
                     if (priceElement != null)
                     {
                         var priceText = priceElement.FirstChild?.TextContent.Trim();
                         if (!string.IsNullOrWhiteSpace(priceText))
                         {
-                            var priceDigits = new string(priceText.Where(char.IsDigit).ToArray());
-                            if (!string.IsNullOrWhiteSpace(priceDigits))
+                            var noCurrency = priceText.Replace("€", "").Trim();
+
+                            noCurrency = noCurrency.Replace(" ", "");
+
+                            if (decimal.TryParse(noCurrency, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed))
                             {
-                                price = int.Parse(priceDigits);
-                                var currencyParts = priceText.Split(' ');
-                                if (currencyParts.Length > 1)
-                                {
-                                    currency = currencyParts.Last().Trim();
-                                }
+                                price = parsed;
                             }
                         }
                     }

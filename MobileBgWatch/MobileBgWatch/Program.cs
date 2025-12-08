@@ -82,7 +82,7 @@ namespace MobileBgWatch
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            builder.Services.AddHostedService<AutoRefreshAdsService>();
+            //builder.Services.AddHostedService<AutoRefreshAdsService>();
 
             builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
