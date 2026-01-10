@@ -149,8 +149,8 @@ li.new_item {
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 300px;
-    height: 350px;
+    width: 600px;
+    height: 550px;
     margin: 4px;
     border: 2px solid #3d3d3d;
     border-radius: 20px;
@@ -227,7 +227,7 @@ a.no_underline {
     .item_pic img.index-image {
         width: 100%;
         height: auto;
-        max-height: 200px;
+        max-height: 400px;
         object-fit: cover;
         border-radius: 10px;
     }
